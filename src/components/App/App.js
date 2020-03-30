@@ -14,11 +14,12 @@ class App extends Component {
       guesses: undefined,
       availableLetters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
       correctLetters: [],
-      incorrectLetters: []
+      incorrectLetters: [],
+      secret: ''
     }
   }
 
-  setUser = user => this.setState({ user })
+  setSecret = secret => this.setState({ secret })
 
   clearUser = () => this.setState({ user: null })
 
@@ -41,7 +42,11 @@ class App extends Component {
           />
         ))}
         <main className="container">
-          <Route exact path='/' component={Welcome}/>
+          <Route exact path='/' render={() => (
+            <Welcome
+              setSecret={this.setSecret}
+            />
+          )}/>
         </main>
       </Fragment>
     )
