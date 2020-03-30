@@ -4,6 +4,8 @@ import { Route } from 'react-router-dom'
 import AutoDismissAlert from '../AutoDismissAlert/AutoDismissAlert'
 import Header from '../Header/Header'
 import Welcome from '../Welcome/Welcome'
+import Guesses from '../Guesses/Guesses'
+import Play from '../Play/Play'
 
 class App extends Component {
   constructor () {
@@ -12,7 +14,34 @@ class App extends Component {
     this.state = {
       msgAlerts: [],
       guesses: undefined,
-      availableLetters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
       correctLetters: [],
       incorrectLetters: [],
       secret: ''
@@ -20,11 +49,65 @@ class App extends Component {
   }
 
   setSecret = secret => this.setState({ secret })
+  setGuesses = guesses => this.setState({ guesses })
+  removeAvailable = letter => {
+    const updatedLetters = [...this.state.availableLetters]
+    updatedLetters.splice(this.state.availableLetters.indexOf(letter), 1)
+    this.setState({
+      availableLetters: updatedLetters
+    })
+  }
+  // used for a full reset
+  resetBoard = () => {
+    this.setState({
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      guesses: undefined,
+      secret: ''
+    }
+    )
+  }
+  pushToCorrect = letter =>
+    this.setState({ correctLetters: [...this.state.correctLetters, letter] })
 
-  clearUser = () => this.setState({ user: null })
+  pushToIncorrect = letter =>
+    this.setState({
+      incorrectLetters: [...this.state.incorrectLetters, letter],
+      guesses: this.state.guesses - 1
+    })
 
   msgAlert = ({ heading, message, variant }) => {
-    this.setState({ msgAlerts: [...this.state.msgAlerts, { heading, message, variant }] })
+    this.setState({
+      msgAlerts: [...this.state.msgAlerts, { heading, message, variant }]
+    })
   }
 
   render () {
@@ -42,11 +125,45 @@ class App extends Component {
           />
         ))}
         <main className="container">
-          <Route exact path='/' render={() => (
-            <Welcome
-              setSecret={this.setSecret}
-            />
-          )}/>
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Welcome msgAlert={this.msgAlert} setSecret={this.setSecret} />
+            )}
+          />
+
+          <Route
+            exact
+            path="/guesses"
+            render={() => (
+              <Guesses
+                msgAlert={this.msgAlert}
+                secret={this.state.secret}
+                setGuesses={this.setGuesses}
+                resetBoard={this.resetBoard}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/play"
+            render={() => (
+              <Play
+                guesses={this.state.guesses}
+                availableLetters={this.state.availableLetters}
+                correctLetters={this.state.correctLetters}
+                incorrectLetters={this.state.incorrectLetters}
+                secret={this.state.secret}
+                pushToCorrect={this.pushToCorrect}
+                pushToIncorrect={this.pushToIncorrect}
+                removeAvailable={this.removeAvailable}
+                msgAlert={this.msgAlert}
+                incrementGuesses={this.incrementGuesses}
+                resetBoard={this.resetBoard}
+              />
+            )}
+          />
         </main>
       </Fragment>
     )
