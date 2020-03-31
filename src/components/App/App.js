@@ -1,38 +1,235 @@
 import React, { Component, Fragment } from 'react'
 import { Route } from 'react-router-dom'
 
-import AuthenticatedRoute from '../AuthenticatedRoute/AuthenticatedRoute'
 import AutoDismissAlert from '../AutoDismissAlert/AutoDismissAlert'
 import Header from '../Header/Header'
-import SignUp from '../SignUp/SignUp'
-import SignIn from '../SignIn/SignIn'
-import SignOut from '../SignOut/SignOut'
-import ChangePassword from '../ChangePassword/ChangePassword'
+import Welcome from '../Welcome/Welcome'
+import Guesses from '../Guesses/Guesses'
+import Play from '../Play/Play'
 
 class App extends Component {
   constructor () {
     super()
-
     this.state = {
-      user: null,
-      msgAlerts: []
+      msgAlerts: [],
+      guesses: undefined,
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      secret: '',
+      gameOver: false,
+      defaultGuesses: undefined
     }
   }
+  setGameOver = bool => this.setState({ gameOver: bool })
+  setSecret = secret => this.setState({ secret })
+  setGuesses = guesses => this.setState({ guesses })
+  setDefaultGuesses = num => this.setState({ defaultGuesses: num })
+  removeAvailable = letter => {
+    const updatedLetters = [...this.state.availableLetters]
+    updatedLetters.splice(this.state.availableLetters.indexOf(letter), 1)
+    this.setState({
+      availableLetters: updatedLetters
+    })
+  }
+  // used for a full reset
+  resetBoard = () => {
+    this.setState({
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      guesses: undefined,
+      secret: '',
+      gameOver: false
+    }
+    )
+  }
+  // used to reset all states except for the secret word, specifically used as a check on unmount of setting a new word
+  resetAllButSecret = () => {
+    this.setState({
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      guesses: undefined,
+      gameOver: false
+    })
+  }
 
-  setUser = user => this.setState({ user })
+  resetAllButSecretAndGuesses = () => {
+    this.setState({
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      gameOver: false
+    })
+  }
 
-  clearUser = () => this.setState({ user: null })
+  resetGame = () => {
+    this.setState({
+      guesses: this.state.defaultGuesses,
+      availableLetters: [
+        'a',
+        'b',
+        'c',
+        'd',
+        'e',
+        'f',
+        'g',
+        'h',
+        'i',
+        'j',
+        'k',
+        'l',
+        'm',
+        'n',
+        'o',
+        'p',
+        'q',
+        'r',
+        's',
+        't',
+        'u',
+        'v',
+        'w',
+        'x',
+        'y',
+        'z'
+      ],
+      correctLetters: [],
+      incorrectLetters: [],
+      gameOver: false
+    })
+  }
+
+  pushToCorrect = letter =>
+    this.setState({ correctLetters: [...this.state.correctLetters, letter] })
+
+  pushToIncorrect = letter =>
+    this.setState({
+      incorrectLetters: [...this.state.incorrectLetters, letter],
+      guesses: this.state.guesses - 1
+    })
 
   msgAlert = ({ heading, message, variant }) => {
-    this.setState({ msgAlerts: [...this.state.msgAlerts, { heading, message, variant }] })
+    this.setState({
+      msgAlerts: [...this.state.msgAlerts, { heading, message, variant }]
+    })
   }
 
   render () {
-    const { msgAlerts, user } = this.state
+    const { msgAlerts, defaultGuesses } = this.state
 
     return (
       <Fragment>
-        <Header user={user} />
+        <Header defaultGuesses={defaultGuesses} />
         {msgAlerts.map((msgAlert, index) => (
           <AutoDismissAlert
             key={index}
@@ -42,18 +239,55 @@ class App extends Component {
           />
         ))}
         <main className="container">
-          <Route path='/sign-up' render={() => (
-            <SignUp msgAlert={this.msgAlert} setUser={this.setUser} />
-          )} />
-          <Route path='/sign-in' render={() => (
-            <SignIn msgAlert={this.msgAlert} setUser={this.setUser} />
-          )} />
-          <AuthenticatedRoute user={user} path='/sign-out' render={() => (
-            <SignOut msgAlert={this.msgAlert} clearUser={this.clearUser} user={user} />
-          )} />
-          <AuthenticatedRoute user={user} path='/change-password' render={() => (
-            <ChangePassword msgAlert={this.msgAlert} user={user} />
-          )} />
+          <Route
+            exact
+            path="/"
+            render={() => (
+              <Welcome
+                msgAlert={this.msgAlert}
+                resetAllButSecret={this.resetAllButSecret}
+                setSecret={this.setSecret}
+              />
+            )}
+          />
+
+          <Route
+            exact
+            path="/guesses"
+            render={() => (
+              <Guesses
+                msgAlert={this.msgAlert}
+                secret={this.state.secret}
+                setGuesses={this.setGuesses}
+                resetAllButSecretAndGuesses={this.resetAllButSecretAndGuesses}
+                setDefaultGuesses={this.setDefaultGuesses}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/play"
+            render={() => (
+              <Play
+                guesses={this.state.guesses}
+                availableLetters={this.state.availableLetters}
+                correctLetters={this.state.correctLetters}
+                incorrectLetters={this.state.incorrectLetters}
+                secret={this.state.secret}
+                setSecret={this.setSecret}
+                pushToCorrect={this.pushToCorrect}
+                pushToIncorrect={this.pushToIncorrect}
+                removeAvailable={this.removeAvailable}
+                msgAlert={this.msgAlert}
+                incrementGuesses={this.incrementGuesses}
+                resetBoard={this.resetBoard}
+                gameOver={this.state.gameOver}
+                setGameOver={this.setGameOver}
+                setGuesses={this.setGuesses}
+                resetGame={this.resetGame}
+              />
+            )}
+          />
         </main>
       </Fragment>
     )
