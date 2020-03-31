@@ -4,6 +4,7 @@ import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
 import ChangeWord from '../ChangeWord/ChangeWord'
+import GuessWord from '../GuessWord/GuessWord'
 
 const Play = ({
   guesses,
@@ -17,7 +18,6 @@ const Play = ({
   removeAvailable,
   msgAlert,
   history,
-  resetBoard,
   gameOver,
   setGameOver,
   resetGame,
@@ -25,6 +25,7 @@ const Play = ({
 }) => {
   const [alerted, setAlerted] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [showGuessForm, setShowGuessForm] = useState(false)
 
   const resetGameAndAlert = () => {
     resetGame()
@@ -33,6 +34,29 @@ const Play = ({
 
   const toggleChangeWord = () => {
     setShowForm(!showForm)
+  }
+
+  const toggleGuessWord = () => {
+    setShowGuessForm(!showGuessForm)
+  }
+
+  const guessWord = (word) => {
+    if (word.toLowerCase() === secret.toLowerCase()) {
+      setAlerted(true)
+      msgAlert({
+        heading: 'Congratulations',
+        message: 'You successfully guessed the correct word!',
+        variant: 'success'
+      })
+      setGameOver(true)
+    } else {
+      msgAlert({
+        heading: 'Oops!',
+        message: 'You guessed the incorrect word!',
+        variant: 'danger'
+      })
+      setGuesses(guesses - 1)
+    }
   }
 
   if (!secret) {
@@ -105,8 +129,13 @@ const Play = ({
         whole word
       </p>
       <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
-      {!showForm && (
+      {!showForm && !showGuessForm && (
         <PrimaryButton onClick={toggleChangeWord}>Change Word?</PrimaryButton>
+      )}
+      {!showGuessForm && !showForm && !gameOver && (
+        <PrimaryButton onClick={toggleGuessWord}>
+          Guess Full Word?
+        </PrimaryButton>
       )}
       {showForm && (
         <ChangeWord
@@ -115,6 +144,9 @@ const Play = ({
           setSecret={setSecret}
           msgAlert={msgAlert}
         />
+      )}
+      {showGuessForm && (
+        <GuessWord guessWord={guessWord} toggleGuessWord={toggleGuessWord} msgAlert={msgAlert} />
       )}
 
       <h1>Available letters:</h1>
