@@ -1,12 +1,8 @@
 import React from 'react'
 import Form from 'react-bootstrap/Form'
+import { PrimaryButton } from '../Shared/Styled'
 
-const WordForm = ({
-  handleChange,
-  handleSubmit,
-  word
-
-}) => (
+const WordForm = ({ handleChange, handleSubmit, word, cancel, cancelForm }) => (
   <span>
     <Form
       style={{ margin: '2rem auto .3rem', width: '60%' }}
@@ -18,8 +14,8 @@ const WordForm = ({
         value={word}
         onChange={handleChange}
       />
-      <button type="submit">Submit</button>
-
+      <PrimaryButton type="submit">Submit</PrimaryButton>
+      {cancel && <PrimaryButton onClick={cancelForm}>Cancel</PrimaryButton>}
     </Form>
   </span>
 )

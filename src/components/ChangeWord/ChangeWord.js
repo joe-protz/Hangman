@@ -2,7 +2,12 @@ import React, { Fragment, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm/WordForm'
 
-const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
+const ChangeWord = ({
+  resetGameAndAlert,
+  setSecret,
+  msgAlert,
+  toggleChangeWord
+}) => {
   const [word, setWord] = useState('')
   const handleChange = event => {
     const words = event.target.value.split(/\s+/)
@@ -22,22 +27,30 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
   const handleSubmit = event => {
     event.preventDefault()
     setSecret(word)
-    resetAllButSecret()
-    history.push('/guesses')
+    resetGameAndAlert()
+    toggleChangeWord()
+  }
+
+  const cancelForm = () => {
+    toggleChangeWord()
+    setWord('')
   }
 
   return (
     <Fragment>
-      <h1>Welcome to Hangman!</h1>
-      <p>Please enter your secret word below. Only one word is allowed at a time and it may not contain any punctuation or numbers. </p>
+      <p>
+        You may change your word below while keeping the same amount of guesses.
+      </p>
       <WordForm
         handleChange={handleChange}
         handleSubmit={handleSubmit}
         word={word}
-        type='text'
+        type="text"
+        cancel={true}
+        cancelForm={cancelForm}
       />
     </Fragment>
   )
 }
 
-export default withRouter(Welcome)
+export default withRouter(ChangeWord)

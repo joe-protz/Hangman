@@ -4,10 +4,11 @@ import Navbar from 'react-bootstrap/Navbar'
 
 const alwaysOptions = (
   <Fragment>
+    <Nav.Link href='#/'>Start Over</Nav.Link>
   </Fragment>
 )
 
-const Header = ({ user }) => (
+const Header = ({ defaultGuesses }) => (
   <Navbar bg="dark" variant="dark" expand="md">
     <Navbar.Brand href="#">
       Hangman

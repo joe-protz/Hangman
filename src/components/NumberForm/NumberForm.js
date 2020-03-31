@@ -1,5 +1,6 @@
 import React from 'react'
 import Form from 'react-bootstrap/Form'
+import { PrimaryButton } from '../Shared/Styled'
 
 const NumberForm = ({ handleChange, handleSubmit, number }) => (
   <span>
@@ -16,7 +17,7 @@ const NumberForm = ({ handleChange, handleSubmit, number }) => (
         max='20'
         min='1'
       />
-      <button type="submit">Submit</button>
+      <PrimaryButton type="submit">Submit</PrimaryButton>
     </Form>
   </span>
 )

@@ -2,25 +2,23 @@ import React, { Fragment, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import NumberForm from '../NumberForm/NumberForm'
 
-const Welcome = ({ setGuesses, history, secret, msgAlert }) => {
+const Welcome = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, history, secret, msgAlert }) => {
   const [number, setNumber] = useState('')
   const handleChange = event => {
-    const num = Math.ceil(event.target.value)
-    if (num > 20 || num < 0) {
-      event.preventDefault()
-      msgAlert({
-        heading: 'Oops!',
-        message: 'Only 1-20 guesses are allowed',
-        variant: 'danger'
-      })
-    } else {
-      setNumber(num)
+    let num = Math.ceil(event.target.value)
+    if (num > 20) {
+      num = 20
+    } else if (num < 0) {
+      num = 1
     }
+    setNumber(num)
   }
 
   const handleSubmit = event => {
     event.preventDefault()
-    setGuesses(number)
+    setGuesses(number || 8)
+    setDefaultGuesses(number || 8)
+    resetAllButSecretAndGuesses()
     history.push('/play')
   }
   if (!secret) {
@@ -29,7 +27,7 @@ const Welcome = ({ setGuesses, history, secret, msgAlert }) => {
   return (
     <Fragment>
       <h1>Welcome to Hangman!</h1>
-      <p>Please enter a number of guesses allowed between 1 and 20 below</p>
+      <p>Please enter a number of guesses allowed between 1 and 20 below. If no number is chosen, it will default to 8.</p>
       <NumberForm
         handleChange={handleChange}
         handleSubmit={handleSubmit}

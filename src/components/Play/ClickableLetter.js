@@ -1,21 +1,30 @@
 import React, { Fragment } from 'react'
 import { withRouter } from 'react-router-dom'
+import { PrimaryButton } from '../Shared/Styled'
 
 const ClickableLetter = ({
-  letter, secret, pushToCorrect, pushToIncorrect, removeAvailable
+  letter, secret, pushToCorrect, pushToIncorrect, removeAvailable, gameOver, msgAlert
 }) => {
   const pushValue = () => {
-    if (secret.toLowerCase().includes(letter)) {
-      pushToCorrect(letter)
-    } else {
-      pushToIncorrect(letter)
-    }
+    if (!gameOver) {
+      if (secret.toLowerCase().includes(letter)) {
+        pushToCorrect(letter)
+      } else {
+        pushToIncorrect(letter)
+      }
 
-    removeAvailable(letter)
+      removeAvailable(letter)
+    } else {
+      msgAlert({
+        heading: 'Oops!',
+        message: 'Game is over, please click reset to play again',
+        variant: 'danger'
+      })
+    }
   }
   return (
     <Fragment>
-      <button onClick={pushValue}>{letter}</button>
+      <PrimaryButton onClick={pushValue}>{letter}</PrimaryButton>
     </Fragment>
   )
 }
