@@ -2,9 +2,14 @@ import React, { Fragment, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import NumberForm from '../NumberForm/NumberForm'
 
-const Welcome = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, history, secret, msgAlert }) => {
+// this is the guesses page, used to allow a user to set max guesses for a game
+
+const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, history, secret }) => {
+  // the temp number stored component level until submit
   const [number, setNumber] = useState('')
+  // handles form changes
   const handleChange = event => {
+    // round up to avoid decimals and dumb users, limit the number from 1-20
     let num = Math.ceil(event.target.value)
     if (num > 20) {
       num = 20
@@ -13,14 +18,17 @@ const Welcome = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
     }
     setNumber(num)
   }
-
+  // push the number if the user has typed one to app, or 8 otherwise, then go to the game
   const handleSubmit = event => {
+    const defaultNum = 8
     event.preventDefault()
-    setGuesses(number || 8)
-    setDefaultGuesses(number || 8)
+    setGuesses(number || defaultNum)
+    setDefaultGuesses(number || defaultNum)
     resetAllButSecretAndGuesses()
     history.push('/play')
   }
+  // if a secret hasn't been set on page load we need to go home to set one
+  // or the game will not work
   if (!secret) {
     history.push('/')
   }
@@ -37,4 +45,4 @@ const Welcome = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
   )
 }
 
-export default withRouter(Welcome)
+export default withRouter(Guesses)
