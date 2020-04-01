@@ -51,7 +51,9 @@ class App extends Component {
   setGameOver = bool => this.setState({ gameOver: bool })
   setSecret = secret => this.setState({ secret })
   setGuesses = guesses => this.setState({ guesses })
+  // used to create a default to avoid making user always have to write number of guesses on new game
   setDefaultGuesses = num => this.setState({ defaultGuesses: num })
+  // removes a letter from the available letters array
   removeAvailable = letter => {
     const updatedLetters = [...this.state.availableLetters]
     updatedLetters.splice(this.state.availableLetters.indexOf(letter), 1)
@@ -135,7 +137,7 @@ class App extends Component {
       gameOver: false
     })
   }
-
+  // resets game state but leaves the secret and guess number
   resetAllButSecretAndGuesses = () => {
     this.setState({
       availableLetters: [
@@ -171,7 +173,7 @@ class App extends Component {
       gameOver: false
     })
   }
-
+  // resets game back to last used guess # and word
   resetGame = () => {
     this.setState({
       guesses: this.state.defaultGuesses,
@@ -208,16 +210,18 @@ class App extends Component {
       gameOver: false
     })
   }
-
+  // pushes a letter to the correctLetter arr
   pushToCorrect = letter =>
     this.setState({ correctLetters: [...this.state.correctLetters, letter] })
 
+  // pushes a letter to incorrectLetters Arr
   pushToIncorrect = letter =>
     this.setState({
       incorrectLetters: [...this.state.incorrectLetters, letter],
       guesses: this.state.guesses - 1
     })
 
+  // used for app-wide messages
   msgAlert = ({ heading, message, variant }) => {
     this.setState({
       msgAlerts: [...this.state.msgAlerts, { heading, message, variant }]
@@ -238,7 +242,9 @@ class App extends Component {
             message={msgAlert.message}
           />
         ))}
+        {/* routes */}
         <main className="container">
+          {/* home */}
           <Route
             exact
             path="/"

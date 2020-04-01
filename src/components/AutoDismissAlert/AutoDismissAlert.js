@@ -3,6 +3,7 @@ import Alert from 'react-bootstrap/Alert'
 
 import './AutoDismissAlert.scss'
 
+// a simple alert that uses custom css to bounce in and automatically fade
 class AutoDismissAlert extends React.Component {
   constructor (props) {
     super(props)
