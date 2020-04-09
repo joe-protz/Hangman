@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import { useSpring, animated } from 'react-spring'
+import { Spring } from 'react-spring/renderprops'
 
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
@@ -43,12 +43,6 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
-
-  const guessBottonProps = useSpring({ opacity: showGuessForm ? 0 : 1 })
-  const guessFormProps = useSpring({ opacity: showGuessForm ? 1 : 0 })
-
-  const formProps = useSpring({ opacity: showForm ? 1 : 0 })
-  const formButtonProps = useSpring({ opacity: showForm ? 0 : 1 })
 
   // uses the resetGame function passed from app but also resets the alert state of play component
   const resetGameAndAlert = () => {
@@ -176,41 +170,73 @@ const Play = ({
         <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
         {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
         {!showForm && !showGuessForm && (
-          <animated.div style={formButtonProps}>
-            <PrimaryButton onClick={toggleChangeWord}>
-              Change Word?
-            </PrimaryButton>
-          </animated.div>
+          <Spring
+            from={{ opacity: 0 }}
+            to={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
+          >
+            {props => (
+              <div style={props}>
+                <PrimaryButton onClick={toggleChangeWord}>
+                  Change Word?
+                </PrimaryButton>
+              </div>
+            )}
+          </Spring>
         )}
 
         {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
         {!showGuessForm && !showForm && !gameOver && (
-          <animated.div style={guessBottonProps}>
-            <PrimaryButton onClick={toggleGuessWord}>
-              Guess Full Word?
-            </PrimaryButton>
-          </animated.div>
+          <Spring
+            from={{ opacity: 0 }}
+            to={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
+          >
+            {props => (
+              <div style={props}>
+                <PrimaryButton onClick={toggleGuessWord}>
+                  Guess Full Word?
+                </PrimaryButton>
+              </div>
+            )}
+          </Spring>
         )}
         {/* change word form */}
         {showForm && (
-          <animated.div style={formProps}>
-            <ChangeWord
-              toggleChangeWord={toggleChangeWord}
-              resetGameAndAlert={resetGameAndAlert}
-              setSecret={setSecret}
-              msgAlert={msgAlert}
-            />
-          </animated.div>
+          <Spring
+            from={{ opacity: 0 }}
+            to={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
+          >
+            {props => (
+              <div style={props}>
+                <ChangeWord
+                  toggleChangeWord={toggleChangeWord}
+                  resetGameAndAlert={resetGameAndAlert}
+                  setSecret={setSecret}
+                  msgAlert={msgAlert}
+                />
+              </div>
+            )}
+          </Spring>
         )}
         {/* guess word form */}
         {showGuessForm && (
-          <animated.div style={guessFormProps}>
-            <GuessWord
-              guessWord={guessWord}
-              toggleGuessWord={toggleGuessWord}
-              msgAlert={msgAlert}
-            />
-          </animated.div>
+          <Spring
+            from={{ opacity: 0 }}
+            to={{ opacity: 1 }}
+            leave={{ opacity: 0 }}
+          >
+            {props => (
+              <div style={props}>
+                <GuessWord
+                  guessWord={guessWord}
+                  toggleGuessWord={toggleGuessWord}
+                  msgAlert={msgAlert}
+                />
+              </div>
+            )}
+          </Spring>
         )}
 
         <h1>Available letters:</h1>
