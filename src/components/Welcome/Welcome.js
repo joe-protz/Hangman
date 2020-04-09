@@ -30,10 +30,23 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
 
   // push the secret and go to the guesses page to set a #
   const handleSubmit = event => {
-    event.preventDefault()
-    setSecret(word)
-    resetAllButSecret()
-    history.push('/guesses')
+    const letters = word.split('')
+    const minLetters = 1
+    const numLetters = letters.length
+
+    if (minLetters > numLetters) {
+      event.preventDefault()
+      msgAlert({
+        heading: 'Whoops!',
+        message: 'Must enter at least once letter',
+        variant: 'danger'
+      })
+    } else {
+      event.preventDefault()
+      setSecret(word)
+      resetAllButSecret()
+      history.push('/guesses')
+    }
   }
 
   return (

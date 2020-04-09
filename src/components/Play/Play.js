@@ -1,5 +1,7 @@
 import React, { Fragment, useState } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
+import { useSpring, animated } from 'react-spring'
+
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
@@ -26,8 +28,6 @@ const Play = ({
   removeAvailable,
   // the standard msg alert used
   msgAlert,
-  // history is used to push a new page
-  history,
   // gameOver is defaulted to false and set to true whenever a game ending event happens, using setGameOver
   gameOver,
   setGameOver,
@@ -43,6 +43,12 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
+
+  const guessBottonProps = useSpring({ opacity: showGuessForm ? 0 : 1 })
+  const guessFormProps = useSpring({ opacity: showGuessForm ? 1 : 0 })
+
+  const formProps = useSpring({ opacity: showForm ? 1 : 0 })
+  const formButtonProps = useSpring({ opacity: showForm ? 0 : 1 })
 
   // uses the resetGame function passed from app but also resets the alert state of play component
   const resetGameAndAlert = () => {
@@ -79,9 +85,22 @@ const Play = ({
   // TODO: Clean this up
   // If theres no secret or the guesses # is undefined we need to do these or the app wont work
   if (!secret) {
-    history.push('/')
+    return (
+      <Redirect
+        to={{
+          pathname: '/',
+          state: { from: location }
+        }}
+      />
+    )
   } else if (guesses === undefined) {
-    history.push('/guesses')
+    return (
+      <Redirect
+        to={{
+          pathname: '/guesses',
+          state: { from: location }
+        }}
+      />)
     // if the guesses hit 0 and it wasnt already a game over, now game is over.
     // needed because guesses # is not checked within letter click function or word guess function
   } else if (guesses === 0 && !gameOver) {
@@ -157,31 +176,41 @@ const Play = ({
         <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
         {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
         {!showForm && !showGuessForm && (
-          <PrimaryButton onClick={toggleChangeWord}>Change Word?</PrimaryButton>
+          <animated.div style={formButtonProps}>
+            <PrimaryButton onClick={toggleChangeWord}>
+              Change Word?
+            </PrimaryButton>
+          </animated.div>
         )}
 
         {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
         {!showGuessForm && !showForm && !gameOver && (
-          <PrimaryButton onClick={toggleGuessWord}>
-            Guess Full Word?
-          </PrimaryButton>
+          <animated.div style={guessBottonProps}>
+            <PrimaryButton onClick={toggleGuessWord}>
+              Guess Full Word?
+            </PrimaryButton>
+          </animated.div>
         )}
         {/* change word form */}
         {showForm && (
-          <ChangeWord
-            toggleChangeWord={toggleChangeWord}
-            resetGameAndAlert={resetGameAndAlert}
-            setSecret={setSecret}
-            msgAlert={msgAlert}
-          />
+          <animated.div style={formProps}>
+            <ChangeWord
+              toggleChangeWord={toggleChangeWord}
+              resetGameAndAlert={resetGameAndAlert}
+              setSecret={setSecret}
+              msgAlert={msgAlert}
+            />
+          </animated.div>
         )}
         {/* guess word form */}
         {showGuessForm && (
-          <GuessWord
-            guessWord={guessWord}
-            toggleGuessWord={toggleGuessWord}
-            msgAlert={msgAlert}
-          />
+          <animated.div style={guessFormProps}>
+            <GuessWord
+              guessWord={guessWord}
+              toggleGuessWord={toggleGuessWord}
+              msgAlert={msgAlert}
+            />
+          </animated.div>
         )}
 
         <h1>Available letters:</h1>
