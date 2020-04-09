@@ -1,5 +1,6 @@
-import React, { Component, Fragment } from 'react'
-import { Route } from 'react-router-dom'
+import React, { Fragment, useState } from 'react'
+import { Route, Switch } from 'react-router-dom'
+// import { useTransition, animated } from 'react-spring'
 
 import AutoDismissAlert from '../AutoDismissAlert/AutoDismissAlert'
 import Header from '../Header/Header'
@@ -7,252 +8,235 @@ import Welcome from '../Welcome/Welcome'
 import Guesses from '../Guesses/Guesses'
 import Play from '../Play/Play'
 
-class App extends Component {
-  constructor () {
-    super()
-    this.state = {
-      msgAlerts: [],
-      guesses: undefined,
-      availableLetters: [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-      ],
-      correctLetters: [],
-      incorrectLetters: [],
-      secret: '',
-      gameOver: false,
-      defaultGuesses: undefined
-    }
-  }
-  setGameOver = bool => this.setState({ gameOver: bool })
-  setSecret = secret => this.setState({ secret })
-  setGuesses = guesses => this.setState({ guesses })
+const App = () => {
   // used to create a default to avoid making user always have to write number of guesses on new game
-  setDefaultGuesses = num => this.setState({ defaultGuesses: num })
+  const [defaultGuesses, setDefaultGuesses] = useState(undefined)
+
+  const [gameOver, setGameOver] = useState(false)
+  const [msgAlerts, setMsgAlerts] = useState([])
+  const [guesses, setGuesses] = useState(undefined)
+  const [availableLetters, setAvailableLetters] = useState([
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
+  ])
+  const [correctLetters, setCorrectLetters] = useState([])
+  const [incorrectLetters, setIncorrectLetters] = useState([])
+  const [secret, setSecret] = useState('')
+
   // removes a letter from the available letters array
-  removeAvailable = letter => {
-    const updatedLetters = [...this.state.availableLetters]
-    updatedLetters.splice(this.state.availableLetters.indexOf(letter), 1)
-    this.setState({
-      availableLetters: updatedLetters
-    })
+  const removeAvailable = letter => {
+    const updatedLetters = [...availableLetters]
+    updatedLetters.splice(availableLetters.indexOf(letter), 1)
+    setAvailableLetters(updatedLetters)
   }
   // used for a full reset
-  resetBoard = () => {
-    this.setState({
-      availableLetters: [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-      ],
-      correctLetters: [],
-      incorrectLetters: [],
-      guesses: undefined,
-      secret: '',
-      gameOver: false
-    }
-    )
+  const resetBoard = () => {
+    setIncorrectLetters([])
+    setCorrectLetters([])
+    setGuesses(undefined)
+    setAvailableLetters([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ])
+    setSecret('')
+    setGameOver(false)
   }
   // used to reset all states except for the secret word, specifically used as a check on unmount of setting a new word
-  resetAllButSecret = () => {
-    this.setState({
-      availableLetters: [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-      ],
-      correctLetters: [],
-      incorrectLetters: [],
-      guesses: undefined,
-      gameOver: false
-    })
+  const resetAllButSecret = () => {
+    setCorrectLetters([])
+    setIncorrectLetters([])
+
+    setAvailableLetters([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ])
+    setGameOver(false)
   }
   // resets game state but leaves the secret and guess number
-  resetAllButSecretAndGuesses = () => {
-    this.setState({
-      availableLetters: [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-      ],
-      correctLetters: [],
-      incorrectLetters: [],
-      gameOver: false
-    })
+  const resetAllButSecretAndGuesses = () => {
+    setCorrectLetters([])
+    setIncorrectLetters([])
+
+    setAvailableLetters([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ])
+    setGameOver(false)
   }
   // resets game back to last used guess # and word
-  resetGame = () => {
-    this.setState({
-      guesses: this.state.defaultGuesses,
-      availableLetters: [
-        'a',
-        'b',
-        'c',
-        'd',
-        'e',
-        'f',
-        'g',
-        'h',
-        'i',
-        'j',
-        'k',
-        'l',
-        'm',
-        'n',
-        'o',
-        'p',
-        'q',
-        'r',
-        's',
-        't',
-        'u',
-        'v',
-        'w',
-        'x',
-        'y',
-        'z'
-      ],
-      correctLetters: [],
-      incorrectLetters: [],
-      gameOver: false
-    })
+  const resetGame = () => {
+    setCorrectLetters([])
+    setIncorrectLetters([])
+
+    setGuesses(defaultGuesses)
+    setAvailableLetters([
+      'a',
+      'b',
+      'c',
+      'd',
+      'e',
+      'f',
+      'g',
+      'h',
+      'i',
+      'j',
+      'k',
+      'l',
+      'm',
+      'n',
+      'o',
+      'p',
+      'q',
+      'r',
+      's',
+      't',
+      'u',
+      'v',
+      'w',
+      'x',
+      'y',
+      'z'
+    ])
+    setGameOver(false)
   }
   // pushes a letter to the correctLetter arr
-  pushToCorrect = letter =>
-    this.setState({ correctLetters: [...this.state.correctLetters, letter] })
+  const pushToCorrect = letter =>
+    setCorrectLetters([...correctLetters, letter])
 
   // pushes a letter to incorrectLetters Arr
-  pushToIncorrect = letter =>
-    this.setState({
-      incorrectLetters: [...this.state.incorrectLetters, letter],
-      guesses: this.state.guesses - 1
-    })
-
-  // used for app-wide messages
-  msgAlert = ({ heading, message, variant }) => {
-    this.setState({
-      msgAlerts: [...this.state.msgAlerts, { heading, message, variant }]
-    })
+  const pushToIncorrect = letter => {
+    setGuesses(guesses - 1)
+    setIncorrectLetters(
+      [...incorrectLetters, letter]
+    )
   }
 
-  render () {
-    const { msgAlerts, defaultGuesses } = this.state
+  // used for app-wide messages
+  const msgAlert = ({ heading, message, variant }) => {
+    setMsgAlerts(
+      [...msgAlerts, { heading, message, variant }]
+    )
+  }
 
-    return (
-      <Fragment>
-        <Header defaultGuesses={defaultGuesses} />
-        {msgAlerts.map((msgAlert, index) => (
-          <AutoDismissAlert
-            key={index}
-            heading={msgAlert.heading}
-            variant={msgAlert.variant}
-            message={msgAlert.message}
-          />
-        ))}
-        {/* routes */}
-        <main className="container">
+  return (
+    <Fragment>
+      <Header defaultGuesses={defaultGuesses} />
+      {msgAlerts.map((msgAlert, index) => (
+        <AutoDismissAlert
+          key={index}
+          heading={msgAlert.heading}
+          variant={msgAlert.variant}
+          message={msgAlert.message}
+        />
+      ))}
+      {/* routes */}
+      <main className="container">
+        <Switch>
           {/* home */}
           <Route
             exact
             path="/"
             render={() => (
               <Welcome
-                msgAlert={this.msgAlert}
-                resetAllButSecret={this.resetAllButSecret}
-                setSecret={this.setSecret}
+                msgAlert={msgAlert}
+                resetAllButSecret={resetAllButSecret}
+                setSecret={setSecret}
               />
             )}
           />
@@ -262,11 +246,11 @@ class App extends Component {
             path="/guesses"
             render={() => (
               <Guesses
-                msgAlert={this.msgAlert}
-                secret={this.state.secret}
-                setGuesses={this.setGuesses}
-                resetAllButSecretAndGuesses={this.resetAllButSecretAndGuesses}
-                setDefaultGuesses={this.setDefaultGuesses}
+                msgAlert={msgAlert}
+                secret={secret}
+                setGuesses={setGuesses}
+                resetAllButSecretAndGuesses={resetAllButSecretAndGuesses}
+                setDefaultGuesses={setDefaultGuesses}
               />
             )}
           />
@@ -275,29 +259,28 @@ class App extends Component {
             path="/play"
             render={() => (
               <Play
-                guesses={this.state.guesses}
-                availableLetters={this.state.availableLetters}
-                correctLetters={this.state.correctLetters}
-                incorrectLetters={this.state.incorrectLetters}
-                secret={this.state.secret}
-                setSecret={this.setSecret}
-                pushToCorrect={this.pushToCorrect}
-                pushToIncorrect={this.pushToIncorrect}
-                removeAvailable={this.removeAvailable}
-                msgAlert={this.msgAlert}
-                incrementGuesses={this.incrementGuesses}
-                resetBoard={this.resetBoard}
-                gameOver={this.state.gameOver}
-                setGameOver={this.setGameOver}
-                setGuesses={this.setGuesses}
-                resetGame={this.resetGame}
+                guesses={guesses}
+                availableLetters={availableLetters}
+                correctLetters={correctLetters}
+                incorrectLetters={incorrectLetters}
+                secret={secret}
+                setSecret={setSecret}
+                pushToCorrect={pushToCorrect}
+                pushToIncorrect={pushToIncorrect}
+                removeAvailable={removeAvailable}
+                msgAlert={msgAlert}
+                resetBoard={resetBoard}
+                gameOver={gameOver}
+                setGameOver={setGameOver}
+                setGuesses={setGuesses}
+                resetGame={resetGame}
               />
             )}
           />
-        </main>
-      </Fragment>
-    )
-  }
+        </Switch>
+      </main>
+    </Fragment>
+  )
 }
 
 export default App
