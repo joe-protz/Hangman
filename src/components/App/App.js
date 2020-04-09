@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
-import { Route, Switch } from 'react-router-dom'
-// import { useTransition, animated } from 'react-spring'
+import { Route, Switch, useLocation } from 'react-router-dom'
+import { useTransition, animated } from 'react-spring'
 
 import AutoDismissAlert from '../AutoDismissAlert/AutoDismissAlert'
 import Header from '../Header/Header'
@@ -46,6 +46,14 @@ const App = () => {
   const [correctLetters, setCorrectLetters] = useState([])
   const [incorrectLetters, setIncorrectLetters] = useState([])
   const [secret, setSecret] = useState('')
+
+  const location = useLocation()
+
+  const transitions = useTransition(location, location => location.pathname, {
+    from: { opacity: 0, transform: 'translate(100%,0)' },
+    enter: { opacity: 1, transform: 'translate(0,0)' },
+    leave: { opacity: 0, transform: 'translate(-50%,0)' }
+  })
 
   // removes a letter from the available letters array
   const removeAvailable = letter => {
@@ -227,57 +235,61 @@ const App = () => {
       ))}
       {/* routes */}
       <main className="container">
-        <Switch>
-          {/* home */}
-          <Route
-            exact
-            path="/"
-            render={() => (
-              <Welcome
-                msgAlert={msgAlert}
-                resetAllButSecret={resetAllButSecret}
-                setSecret={setSecret}
+        {transitions.map(({ item, props, key }) => (
+          <animated.div key={key} style={props}>
+            <Switch location={item}>
+              {/* home */}
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <Welcome
+                    msgAlert={msgAlert}
+                    resetAllButSecret={resetAllButSecret}
+                    setSecret={setSecret}
+                  />
+                )}
               />
-            )}
-          />
 
-          <Route
-            exact
-            path="/guesses"
-            render={() => (
-              <Guesses
-                msgAlert={msgAlert}
-                secret={secret}
-                setGuesses={setGuesses}
-                resetAllButSecretAndGuesses={resetAllButSecretAndGuesses}
-                setDefaultGuesses={setDefaultGuesses}
+              <Route
+                exact
+                path="/guesses"
+                render={() => (
+                  <Guesses
+                    msgAlert={msgAlert}
+                    secret={secret}
+                    setGuesses={setGuesses}
+                    resetAllButSecretAndGuesses={resetAllButSecretAndGuesses}
+                    setDefaultGuesses={setDefaultGuesses}
+                  />
+                )}
               />
-            )}
-          />
-          <Route
-            exact
-            path="/play"
-            render={() => (
-              <Play
-                guesses={guesses}
-                availableLetters={availableLetters}
-                correctLetters={correctLetters}
-                incorrectLetters={incorrectLetters}
-                secret={secret}
-                setSecret={setSecret}
-                pushToCorrect={pushToCorrect}
-                pushToIncorrect={pushToIncorrect}
-                removeAvailable={removeAvailable}
-                msgAlert={msgAlert}
-                resetBoard={resetBoard}
-                gameOver={gameOver}
-                setGameOver={setGameOver}
-                setGuesses={setGuesses}
-                resetGame={resetGame}
+              <Route
+                exact
+                path="/play"
+                render={() => (
+                  <Play
+                    guesses={guesses}
+                    availableLetters={availableLetters}
+                    correctLetters={correctLetters}
+                    incorrectLetters={incorrectLetters}
+                    secret={secret}
+                    setSecret={setSecret}
+                    pushToCorrect={pushToCorrect}
+                    pushToIncorrect={pushToIncorrect}
+                    removeAvailable={removeAvailable}
+                    msgAlert={msgAlert}
+                    resetBoard={resetBoard}
+                    gameOver={gameOver}
+                    setGameOver={setGameOver}
+                    setGuesses={setGuesses}
+                    resetGame={resetGame}
+                  />
+                )}
               />
-            )}
-          />
-        </Switch>
+            </Switch>
+          </animated.div>
+        ))}
       </main>
     </Fragment>
   )

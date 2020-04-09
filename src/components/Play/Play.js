@@ -5,6 +5,8 @@ import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
 import ChangeWord from '../ChangeWord/ChangeWord'
 import GuessWord from '../GuessWord/GuessWord'
+
+import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 // this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
 const Play = ({
   // num of guesses and function to set them
@@ -143,46 +145,52 @@ const Play = ({
   ))
 
   return (
-    <Fragment>
-      {/* guesses will be dynamically updated from state rerenders */}
-      <h1>Guesses Left: {guesses}</h1>
-      <p>
-        Please click a letter to guess a letter or enter a word to guess the
-        whole word
-      </p>
-      {/* reset game button */}
-      <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
-      {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
-      {!showForm && !showGuessForm && (
-        <PrimaryButton onClick={toggleChangeWord}>Change Word?</PrimaryButton>
-      )}
+    <AbsoluteWrapper>
+      <Fragment>
+        {/* guesses will be dynamically updated from state rerenders */}
+        <h1>Guesses Left: {guesses}</h1>
+        <p>
+          Please click a letter to guess a letter or enter a word to guess the
+          whole word
+        </p>
+        {/* reset game button */}
+        <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
+        {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
+        {!showForm && !showGuessForm && (
+          <PrimaryButton onClick={toggleChangeWord}>Change Word?</PrimaryButton>
+        )}
 
-      {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
-      {!showGuessForm && !showForm && !gameOver && (
-        <PrimaryButton onClick={toggleGuessWord}>
-          Guess Full Word?
-        </PrimaryButton>
-      )}
-      {/* change word form */}
-      {showForm && (
-        <ChangeWord
-          toggleChangeWord={toggleChangeWord}
-          resetGameAndAlert={resetGameAndAlert}
-          setSecret={setSecret}
-          msgAlert={msgAlert}
-        />
-      )}
-      {/* guess word form */}
-      {showGuessForm && (
-        <GuessWord guessWord={guessWord} toggleGuessWord={toggleGuessWord} msgAlert={msgAlert} />
-      )}
+        {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
+        {!showGuessForm && !showForm && !gameOver && (
+          <PrimaryButton onClick={toggleGuessWord}>
+            Guess Full Word?
+          </PrimaryButton>
+        )}
+        {/* change word form */}
+        {showForm && (
+          <ChangeWord
+            toggleChangeWord={toggleChangeWord}
+            resetGameAndAlert={resetGameAndAlert}
+            setSecret={setSecret}
+            msgAlert={msgAlert}
+          />
+        )}
+        {/* guess word form */}
+        {showGuessForm && (
+          <GuessWord
+            guessWord={guessWord}
+            toggleGuessWord={toggleGuessWord}
+            msgAlert={msgAlert}
+          />
+        )}
 
-      <h1>Available letters:</h1>
-      {availableLetters}
-      <div className="row mb-3">{revealedLetters}</div>
-      <h1>Wrong letters:</h1>
-      {wrongLetters}
-    </Fragment>
+        <h1>Available letters:</h1>
+        {availableLetters}
+        <div className="row mb-3">{revealedLetters}</div>
+        <h1>Wrong letters:</h1>
+        {wrongLetters}
+      </Fragment>
+    </AbsoluteWrapper>
   )
 }
 
