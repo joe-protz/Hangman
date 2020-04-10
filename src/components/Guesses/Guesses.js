@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
-import { withRouter } from 'react-router-dom'
+import { withRouter, Redirect } from 'react-router-dom'
 import NumberForm from '../NumberForm/NumberForm'
+import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the guesses page, used to allow a user to set max guesses for a game
 
@@ -30,18 +31,30 @@ const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
   // if a secret hasn't been set on page load we need to go home to set one
   // or the game will not work
   if (!secret) {
-    history.push('/')
+    return (
+      <Redirect
+        to={{
+          pathname: '/',
+          state: { from: location }
+        }}
+      />
+    )
   }
   return (
-    <Fragment>
-      <h1>Welcome to Hangman!</h1>
-      <p>Please enter a number of guesses allowed between 1 and 20 below. If no number is chosen, it will default to 8.</p>
-      <NumberForm
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        number={number}
-      />
-    </Fragment>
+    <AbsoluteWrapper>
+      <Fragment>
+        <h1>Welcome to Hangman!</h1>
+        <p>
+          Please enter a number of guesses allowed between 1 and 20 below. If no
+          number is chosen, it will default to 8.
+        </p>
+        <NumberForm
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          number={number}
+        />
+      </Fragment>
+    </AbsoluteWrapper>
   )
 }
 

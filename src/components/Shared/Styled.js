@@ -1,6 +1,7 @@
 import styled from 'styled-components'
+import { animated } from 'react-spring'
 // This primary button is used to create a green button used app-wide, if the props 'wrong' are set to true it is instead a unclickable red button
-export const PrimaryButton = styled.button`
+const styledButton = styled.button`
          background: transparent;
          width: max-content;
          font-size: 1.3rem;
@@ -26,3 +27,4 @@ export const PrimaryButton = styled.button`
          }
     `}
        `
+export const PrimaryButton = animated(styledButton)

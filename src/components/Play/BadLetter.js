@@ -3,11 +3,11 @@ import { withRouter } from 'react-router-dom'
 import { PrimaryButton } from '../Shared/Styled'
 
 const BadLetter = ({
-  letter
+  letter, style
 }) => {
   return (
     <Fragment>
-      <PrimaryButton wrong={true}>{letter}</PrimaryButton>
+      <PrimaryButton style={style}wrong={true}>{letter}</PrimaryButton>
     </Fragment>
   )
 }

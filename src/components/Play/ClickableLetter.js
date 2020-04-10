@@ -1,10 +1,9 @@
-import React, { Fragment } from 'react'
-import { withRouter } from 'react-router-dom'
+import React from 'react'
 import { PrimaryButton } from '../Shared/Styled'
 // these are the green letters used to let a user guess a letter
 
 const ClickableLetter = ({
-  letter, secret, pushToCorrect, pushToIncorrect, removeAvailable, gameOver, msgAlert
+  letter, secret, pushToCorrect, pushToIncorrect, removeAvailable, gameOver, msgAlert, style
 }) => {
   // this function is used to either push the value to a correct or incorrect array causing an app wide state change and re render
   const pushValue = () => {
@@ -25,10 +24,10 @@ const ClickableLetter = ({
     }
   }
   return (
-    <Fragment>
-      <PrimaryButton onClick={pushValue}>{letter}</PrimaryButton>
-    </Fragment>
+
+    <PrimaryButton style={style} onClick={pushValue}>{letter}</PrimaryButton>
+
   )
 }
 
-export default withRouter(ClickableLetter)
+export default ClickableLetter
