@@ -1,8 +1,7 @@
 /* eslint-disable react/display-name */
 import React, { Fragment, useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import { Spring, animated, Transition } from 'react-spring/renderprops'
-
+import { Spring, Transition, animated } from 'react-spring/renderprops'
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
@@ -45,13 +44,6 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
-  const AnimatedLetter = animated(ClickableLetter)
-
-  // const transitions = useTransition(availableLetters, availableLetters => availableLetters.key, {
-  //   from: { opacity: 0, transform: 'translate(100%,0)' },
-  //   enter: { opacity: 1, transform: 'translate(0,0)' },
-  //   leave: { opacity: 0, transform: 'translate(-50%,0)' }
-  // })
 
   // uses the resetGame function passed from app but also resets the alert state of play component
   const resetGameAndAlert = () => {
@@ -150,70 +142,63 @@ const Play = ({
   })
   // we dont declare here because we're reusing the available letters variable passed in through app to create a pool of clickable green letters
 
-  // const transitions = useTransition(availableLetters, item => item, {
-  //   from: { opacity: 0},
-  //   enter: { opacity: 1},
-  //   leave: { opacity: 0}
-  // })
-
-  // const availHTML = transitions.map(({ item, props, key }) =>
-  //   <AnimatedLetter key={key} style={props}
-  //     pushToCorrect={pushToCorrect}
-  //     pushToIncorrect={pushToIncorrect}
-  //     secret={secret}
-  //     removeAvailable={removeAvailable}
-  //     letter={item}
-  //     gameOver={gameOver}
-  //     msgAlert={msgAlert}/>
-  // )
-
   const availHTML = (
     <Transition
       items={availableLetters}
       keys={item => item}
-      from={{ opacity: 0 }}
-      enter={{ opacity: 1 }}
-      leave={{ opacity: 0 }}
-      // config={config.slow}
+      initial={null}
+      from={{
+        opacity: 0,
+        maxWidth: '0px',
+        overflow: 'hidden',
+        padding: '0em 0em',
+        margin: '0em'
+      }}
+      enter={{
+        opacity: 1,
+        maxWidth: '100px',
+        padding: '0.25em 1em',
+        margin: '0.3em'
+      }}
+      leave={{ opacity: 0, maxWidth: '0px', padding: '0em 0em', margin: '0em' }}
     >
-      {/* {item => props => <div onClick={() => removeAvailable(item)} style={props}>{item}</div>} */}
-      {item => props =>
-        <AnimatedLetter
-          style={props}
+      {letter => props => (
+        <ClickableLetter
+          style={{ ...props, transition: 'ease' }}
           pushToCorrect={pushToCorrect}
           pushToIncorrect={pushToIncorrect}
           secret={secret}
           removeAvailable={removeAvailable}
-          letter={item}
+          letter={letter}
           gameOver={gameOver}
           msgAlert={msgAlert}
         />
-      }
+      )}
     </Transition>
   )
 
-  // availableLetters = availableLetters.map(letter => (
-  //   <ClickableLetter
-  //     key={letter}
-  //     pushToCorrect={pushToCorrect}
-  //     pushToIncorrect={pushToIncorrect}
-  //     secret={secret}
-  //     removeAvailable={removeAvailable}
-  //     letter={letter}
-  //     gameOver={gameOver}
-  //     msgAlert={msgAlert}
-  //   />
-  // ))
   // this is similar except for clarity, it has a declaration
-  const wrongLetters = incorrectLetters.map(letter => (
-    <BadLetter key={letter} letter={letter} wrong={true} />
-  ))
-
+  const wrongLetters = (
+    <Transition
+      items={incorrectLetters}
+      keys={item => item}
+      from={{ opacity: 0, transform: 'translate(0,-300px)' }}
+      enter={{ opacity: 1, transform: 'translate(0,0)' }}
+      leave={{ opacity: 0, transform: 'translate(0,-300px)' }}
+    >
+      {letter => props => (
+        <BadLetter letter={letter} wrong={true} style={props} />
+      )}
+    </Transition>
+  )
+  const showGuessWordBtn = !showGuessForm && !showForm && !gameOver
+  const showFormButton = !showForm && !showGuessForm
   return (
     <AbsoluteWrapper>
       <Fragment>
         {/* guesses will be dynamically updated from state rerenders */}
-        <h1>Guesses Left: {guesses}</h1>
+        {!gameOver && <h1>Guesses Left: {guesses}</h1>}
+        {gameOver && <h1>Game Over!</h1>}
         <p>
           Please click a letter to guess a letter or enter a word to guess the
           whole word
@@ -221,63 +206,68 @@ const Play = ({
         {/* reset game button */}
         <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
         {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
-        {!showForm && !showGuessForm && (
-          <Spring
-            from={{ opacity: 0 }}
-            to={{ opacity: 1 }}
-            leave={{ opacity: 0, transition: 'opacity .9s ease' }}
-          >
-            {props => (
-              <div style={props}>
-                <PrimaryButton onClick={toggleChangeWord}>
-                  Change Word?
-                </PrimaryButton>
-              </div>
-            )}
-          </Spring>
-        )}
-
+        <Transition
+          items={showFormButton}
+          initial={null}
+          from={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+          enter={{ opacity: 1, maxHeight: 'auto' }}
+          leave={{ opacity: 0, maxHeight: 0 }}
+        >
+          {showFormButton =>
+            showFormButton &&
+            (props => (
+              <PrimaryButton style={props} onClick={toggleChangeWord}>
+                Change Word?
+              </PrimaryButton>
+            ))
+          }
+        </Transition>
         {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
-        {!showGuessForm && !showForm && !gameOver && (
-          <Spring
-            from={{ opacity: 0 }}
-            to={{ opacity: 1 }}
-            leave={{ opacity: 0, margin: '50px' }}
-          >
-            {props => (
-              <div style={props}>
-                <PrimaryButton onClick={toggleGuessWord}>
-                  Guess Full Word?
-                </PrimaryButton>
-              </div>
-            )}
-          </Spring>
-        )}
+        <Transition
+          items={showGuessWordBtn}
+          initial={null}
+          from={{
+            opacity: 0,
+            maxHeight: 0,
+            overflow: 'hidden',
+            transform: 'translate(100%,0)'
+          }}
+          enter={{ opacity: 1, maxHeight: 'auto', transform: 'translate(0,0)' }}
+          leave={{ opacity: 0, maxHeight: 0 }}
+        >
+          {showGuessWordBtn =>
+            showGuessWordBtn &&
+            (props => (
+              <PrimaryButton style={props} onClick={toggleGuessWord}>
+                Guess Full Word?
+              </PrimaryButton>
+            ))
+          }
+        </Transition>
         {/* change word form */}
         {showForm && (
           <Spring
-            from={{ opacity: 0 }}
-            to={{ opacity: 1 }}
-            leave={{ opacity: 0, margin: '50px' }}
+            from={{ opacity: 0, maxHeight: 0 }}
+            to={{ opacity: 1, maxHeight: 'auto' }}
           >
             {props => (
-              <div style={props}>
+              <animated.div style={props}>
                 <ChangeWord
                   toggleChangeWord={toggleChangeWord}
                   resetGameAndAlert={resetGameAndAlert}
                   setSecret={setSecret}
                   msgAlert={msgAlert}
                 />
-              </div>
+              </animated.div>
             )}
           </Spring>
         )}
+
         {/* guess word form */}
         {showGuessForm && (
           <Spring
-            from={{ opacity: 0 }}
-            to={{ opacity: 1 }}
-            leave={{ opacity: 0, margin: '50px' }}
+            from={{ opacity: 0, maxHeight: 0 }}
+            to={{ opacity: 1, maxHeight: 'auto' }}
           >
             {props => (
               <div style={props}>
@@ -290,7 +280,6 @@ const Play = ({
             )}
           </Spring>
         )}
-
         <h1>Available letters:</h1>
         {availHTML}
         <div className="row mb-3">{revealedLetters}</div>

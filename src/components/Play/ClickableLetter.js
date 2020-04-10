@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { PrimaryButton } from '../Shared/Styled'
 // these are the green letters used to let a user guess a letter
 
@@ -24,9 +24,9 @@ const ClickableLetter = ({
     }
   }
   return (
-    <Fragment>
-      <PrimaryButton style={style} onClick={pushValue}>{letter}</PrimaryButton>
-    </Fragment>
+
+    <PrimaryButton style={style} onClick={pushValue}>{letter}</PrimaryButton>
+
   )
 }
 
