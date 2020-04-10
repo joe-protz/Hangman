@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm/WordForm'
+import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the home component, used to start a new game from scratch
 
@@ -29,23 +30,38 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
 
   // push the secret and go to the guesses page to set a #
   const handleSubmit = event => {
-    event.preventDefault()
-    setSecret(word)
-    resetAllButSecret()
-    history.push('/guesses')
+    const letters = word.split('')
+    const minLetters = 1
+    const numLetters = letters.length
+
+    if (minLetters > numLetters) {
+      event.preventDefault()
+      msgAlert({
+        heading: 'Whoops!',
+        message: 'Must enter at least once letter',
+        variant: 'danger'
+      })
+    } else {
+      event.preventDefault()
+      setSecret(word)
+      resetAllButSecret()
+      history.push('/guesses')
+    }
   }
 
   return (
-    <Fragment>
-      <h1>Welcome to Hangman!</h1>
-      <p>Please enter your secret word below. Only one word is allowed at a time and it may not contain any punctuation or numbers. </p>
-      <WordForm
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        word={word}
-        type='text'
-      />
-    </Fragment>
+    <AbsoluteWrapper>
+      <Fragment>
+        <h1>Welcome to Hangman!</h1>
+        <p>Please enter your secret word below. Only one word is allowed at a time and it may not contain any punctuation or numbers. </p>
+        <WordForm
+          handleChange={handleChange}
+          handleSubmit={handleSubmit}
+          word={word}
+          type='text'
+        />
+      </Fragment>
+    </AbsoluteWrapper>
   )
 }
 
