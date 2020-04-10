@@ -1,6 +1,7 @@
+/* eslint-disable react/display-name */
 import React, { Fragment, useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import { Spring } from 'react-spring/renderprops'
+import { Spring, animated, Transition } from 'react-spring/renderprops'
 
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
@@ -9,6 +10,7 @@ import ChangeWord from '../ChangeWord/ChangeWord'
 import GuessWord from '../GuessWord/GuessWord'
 
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
+
 // this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
 const Play = ({
   // num of guesses and function to set them
@@ -43,6 +45,13 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
+  const AnimatedLetter = animated(ClickableLetter)
+
+  // const transitions = useTransition(availableLetters, availableLetters => availableLetters.key, {
+  //   from: { opacity: 0, transform: 'translate(100%,0)' },
+  //   enter: { opacity: 1, transform: 'translate(0,0)' },
+  //   leave: { opacity: 0, transform: 'translate(-50%,0)' }
+  // })
 
   // uses the resetGame function passed from app but also resets the alert state of play component
   const resetGameAndAlert = () => {
@@ -140,18 +149,61 @@ const Play = ({
     }
   })
   // we dont declare here because we're reusing the available letters variable passed in through app to create a pool of clickable green letters
-  availableLetters = availableLetters.map(letter => (
-    <ClickableLetter
-      key={letter}
-      pushToCorrect={pushToCorrect}
-      pushToIncorrect={pushToIncorrect}
-      secret={secret}
-      removeAvailable={removeAvailable}
-      letter={letter}
-      gameOver={gameOver}
-      msgAlert={msgAlert}
-    />
-  ))
+
+  // const transitions = useTransition(availableLetters, item => item, {
+  //   from: { opacity: 0},
+  //   enter: { opacity: 1},
+  //   leave: { opacity: 0}
+  // })
+
+  // const availHTML = transitions.map(({ item, props, key }) =>
+  //   <AnimatedLetter key={key} style={props}
+  //     pushToCorrect={pushToCorrect}
+  //     pushToIncorrect={pushToIncorrect}
+  //     secret={secret}
+  //     removeAvailable={removeAvailable}
+  //     letter={item}
+  //     gameOver={gameOver}
+  //     msgAlert={msgAlert}/>
+  // )
+
+  const availHTML = (
+    <Transition
+      items={availableLetters}
+      keys={item => item}
+      from={{ opacity: 0 }}
+      enter={{ opacity: 1 }}
+      leave={{ opacity: 0 }}
+      // config={config.slow}
+    >
+      {/* {item => props => <div onClick={() => removeAvailable(item)} style={props}>{item}</div>} */}
+      {item => props =>
+        <AnimatedLetter
+          style={props}
+          pushToCorrect={pushToCorrect}
+          pushToIncorrect={pushToIncorrect}
+          secret={secret}
+          removeAvailable={removeAvailable}
+          letter={item}
+          gameOver={gameOver}
+          msgAlert={msgAlert}
+        />
+      }
+    </Transition>
+  )
+
+  // availableLetters = availableLetters.map(letter => (
+  //   <ClickableLetter
+  //     key={letter}
+  //     pushToCorrect={pushToCorrect}
+  //     pushToIncorrect={pushToIncorrect}
+  //     secret={secret}
+  //     removeAvailable={removeAvailable}
+  //     letter={letter}
+  //     gameOver={gameOver}
+  //     msgAlert={msgAlert}
+  //   />
+  // ))
   // this is similar except for clarity, it has a declaration
   const wrongLetters = incorrectLetters.map(letter => (
     <BadLetter key={letter} letter={letter} wrong={true} />
@@ -173,7 +225,7 @@ const Play = ({
           <Spring
             from={{ opacity: 0 }}
             to={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
+            leave={{ opacity: 0, transition: 'opacity .9s ease' }}
           >
             {props => (
               <div style={props}>
@@ -190,7 +242,7 @@ const Play = ({
           <Spring
             from={{ opacity: 0 }}
             to={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
+            leave={{ opacity: 0, margin: '50px' }}
           >
             {props => (
               <div style={props}>
@@ -206,7 +258,7 @@ const Play = ({
           <Spring
             from={{ opacity: 0 }}
             to={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
+            leave={{ opacity: 0, margin: '50px' }}
           >
             {props => (
               <div style={props}>
@@ -225,7 +277,7 @@ const Play = ({
           <Spring
             from={{ opacity: 0 }}
             to={{ opacity: 1 }}
-            leave={{ opacity: 0 }}
+            leave={{ opacity: 0, margin: '50px' }}
           >
             {props => (
               <div style={props}>
@@ -240,7 +292,7 @@ const Play = ({
         )}
 
         <h1>Available letters:</h1>
-        {availableLetters}
+        {availHTML}
         <div className="row mb-3">{revealedLetters}</div>
         <h1>Wrong letters:</h1>
         {wrongLetters}

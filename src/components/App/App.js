@@ -236,7 +236,7 @@ const App = () => {
       {/* routes */}
       <main className="container">
         {transitions.map(({ item, props, key }) => (
-          <animated.div key={key} style={props}>
+          <animated.div native='true' key={key} style={props}>
             <Switch location={item}>
               {/* home */}
               <Route
