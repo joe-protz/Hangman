@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import { Spring, Transition, animated } from 'react-spring/renderprops'
 import ClickableLetter from './ClickableLetter'
@@ -35,7 +35,9 @@ const Play = ({
   // resetGame is called to play with the same exact secret and guesses again
   resetGame,
   // set the secret word
-  setSecret
+  setSecret,
+  won,
+  setWon
 }) => {
   // have we already told the user about a game over?
   const [alerted, setAlerted] = useState(false)
@@ -77,7 +79,6 @@ const Play = ({
       setGuesses(guesses - 1)
     }
   }
-  // TODO: Clean this up
   // If theres no secret or the guesses # is undefined we need to do these or the app wont work
   if (!secret) {
     return (
@@ -113,6 +114,7 @@ const Play = ({
       message: 'You successfully guessed the correct word!',
       variant: 'success'
     })
+    setWon(true)
     setAlerted(true)
     setGameOver(true)
     // self explantory.
@@ -128,13 +130,13 @@ const Play = ({
   const revealedLetters = secret.split('').map((letter, index) => {
     if (correctLetters.includes(letter.toLowerCase())) {
       return (
-        <div className="col-1 rev p-0" key={index}>
+        <div className="col-1 rev p-0 school-font" key={index}>
           {letter}
         </div>
       )
     } else {
       return (
-        <div className="col-1 rev p-0" key={index}>
+        <div className="col-1 rev p-0 school-font" key={index}>
           &nbsp;
         </div>
       )
@@ -157,6 +159,7 @@ const Play = ({
       enter={{
         opacity: 1,
         maxWidth: '100px',
+        overflow: 'visible',
         padding: '0.25em 1em',
         margin: '0.3em'
       }}
@@ -195,97 +198,114 @@ const Play = ({
   const showFormButton = !showForm && !showGuessForm
   return (
     <AbsoluteWrapper>
-      <Fragment>
+      <div className="main-shadow">
         {/* guesses will be dynamically updated from state rerenders */}
-        {!gameOver && <h1>Guesses Left: {guesses}</h1>}
-        {gameOver && <h1>Game Over!</h1>}
         <p>
           Please click a letter to guess a letter or enter a word to guess the
           whole word
         </p>
         {/* reset game button */}
-        <PrimaryButton onClick={resetGameAndAlert}>Reset Guesses</PrimaryButton>
-        {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
-        <Transition
-          items={showFormButton}
-          initial={null}
-          from={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
-          enter={{ opacity: 1, maxHeight: 'auto' }}
-          leave={{ opacity: 0, maxHeight: 0 }}
-        >
-          {showFormButton =>
-            showFormButton &&
-            (props => (
-              <PrimaryButton style={props} onClick={toggleChangeWord}>
-                Change Word?
-              </PrimaryButton>
-            ))
-          }
-        </Transition>
-        {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
-        <Transition
-          items={showGuessWordBtn}
-          initial={null}
-          from={{
-            opacity: 0,
-            maxHeight: 0,
-            overflow: 'hidden',
-            transform: 'translate(100%,0)'
-          }}
-          enter={{ opacity: 1, maxHeight: 'auto', transform: 'translate(0,0)' }}
-          leave={{ opacity: 0, maxHeight: 0 }}
-        >
-          {showGuessWordBtn =>
-            showGuessWordBtn &&
-            (props => (
-              <PrimaryButton style={props} onClick={toggleGuessWord}>
-                Guess Full Word?
-              </PrimaryButton>
-            ))
-          }
-        </Transition>
-        {/* change word form */}
-        {showForm && (
-          <Spring
-            from={{ opacity: 0, maxHeight: 0 }}
-            to={{ opacity: 1, maxHeight: 'auto' }}
+        <div className="inner-shadow">
+          <PrimaryButton onClick={resetGameAndAlert}>
+            Reset Guesses
+          </PrimaryButton>
+          {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
+          <Transition
+            items={showFormButton}
+            initial={null}
+            from={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
+            enter={{ opacity: 1, maxHeight: 'auto' }}
+            leave={{ opacity: 0, maxHeight: 0 }}
           >
-            {props => (
-              <animated.div style={props}>
-                <ChangeWord
-                  toggleChangeWord={toggleChangeWord}
-                  resetGameAndAlert={resetGameAndAlert}
-                  setSecret={setSecret}
-                  msgAlert={msgAlert}
-                />
-              </animated.div>
-            )}
-          </Spring>
-        )}
+            {showFormButton =>
+              showFormButton &&
+              (props => (
+                <PrimaryButton style={props} onClick={toggleChangeWord}>
+                  Change Word?
+                </PrimaryButton>
+              ))
+            }
+          </Transition>
+          {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
+          <Transition
+            items={showGuessWordBtn}
+            initial={null}
+            from={{
+              opacity: 0,
+              maxHeight: 0,
+              overflow: 'hidden',
+              transform: 'translate(100%,0)'
+            }}
+            enter={{
+              opacity: 1,
+              maxHeight: 'auto',
+              transform: 'translate(0,0)'
+            }}
+            leave={{ opacity: 0, maxHeight: 0 }}
+          >
+            {showGuessWordBtn =>
+              showGuessWordBtn &&
+              (props => (
+                <PrimaryButton style={props} onClick={toggleGuessWord}>
+                  Guess Full Word?
+                </PrimaryButton>
+              ))
+            }
+          </Transition>
+          {/* change word form */}
+          {showForm && (
+            <Spring
+              from={{ opacity: 0, maxHeight: 0 }}
+              to={{ opacity: 1, maxHeight: 'auto' }}
+            >
+              {props => (
+                <animated.div style={props}>
+                  <ChangeWord
+                    toggleChangeWord={toggleChangeWord}
+                    resetGameAndAlert={resetGameAndAlert}
+                    setSecret={setSecret}
+                    msgAlert={msgAlert}
+                  />
+                </animated.div>
+              )}
+            </Spring>
+          )}
 
-        {/* guess word form */}
-        {showGuessForm && (
-          <Spring
-            from={{ opacity: 0, maxHeight: 0 }}
-            to={{ opacity: 1, maxHeight: 'auto' }}
-          >
-            {props => (
-              <div style={props}>
-                <GuessWord
-                  guessWord={guessWord}
-                  toggleGuessWord={toggleGuessWord}
-                  msgAlert={msgAlert}
-                />
-              </div>
-            )}
-          </Spring>
-        )}
-        <h1>Available letters:</h1>
-        {availHTML}
-        <div className="row mb-3">{revealedLetters}</div>
-        <h1>Wrong letters:</h1>
-        {wrongLetters}
-      </Fragment>
+          {/* guess word form */}
+          {showGuessForm && (
+            <Spring
+              from={{ opacity: 0, maxHeight: 0 }}
+              to={{ opacity: 1, maxHeight: 'auto' }}
+            >
+              {props => (
+                <div style={props}>
+                  <GuessWord
+                    guessWord={guessWord}
+                    toggleGuessWord={toggleGuessWord}
+                    msgAlert={msgAlert}
+                  />
+                </div>
+              )}
+            </Spring>
+          )}
+        </div>
+        <div className="inner-shadow" id="scroll-top">
+          <h3>Available letters:{availHTML}</h3>
+        </div>
+        <div className="row mb-3 inner-shadow d">
+          {!gameOver && <h3 className="col-12">Guesses Left: {guesses}</h3>}
+          {gameOver &&
+            (won ? (
+              <h3 className="col-12">You Won!</h3>
+            ) : (
+              <h3 className="col-12">Game Over!</h3>
+            ))}
+          {revealedLetters}
+        </div>
+        <div className="inner-shadow">
+          <h3>Wrong letters:{wrongLetters}</h3>
+        </div>
+      </div>
     </AbsoluteWrapper>
   )
 }

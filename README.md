@@ -14,6 +14,5 @@ I wanted to use React for this project for two main reasons. One, if it is used 
 - Code needs some refactoring
 - Maybe a score tally
 - Use Context API to clean up code significantly
-- Figure out why the app wont build with transitions
 
 

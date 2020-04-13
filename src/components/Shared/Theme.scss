@@ -1,0 +1,23 @@
+$primary :#155724;
+$secondary: #c3e6cb;
+
+::-webkit-input-placeholder {
+  /* WebKit browsers */
+  color: $primary !important;
+}
+:-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  color: $primary !important;
+}
+::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  color: $primary !important;
+}
+:-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  color: $primary !important;
+}
+
+::placeholder {
+  color: $primary !important;
+}

@@ -1,6 +1,7 @@
 import React from 'react'
 import Form from 'react-bootstrap/Form'
 import { PrimaryButton } from '../Shared/Styled'
+import './wordform.scss'
 
 const WordForm = ({ handleChange, handleSubmit, word, cancel, cancelForm }) => (
   <span>
@@ -9,6 +10,7 @@ const WordForm = ({ handleChange, handleSubmit, word, cancel, cancelForm }) => (
       onSubmit={handleSubmit}
     >
       <Form.Control
+        className="primary-form"
         name="word"
         placeholder="Choose a word"
         value={word}
