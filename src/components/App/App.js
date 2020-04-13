@@ -206,15 +206,20 @@ const App = () => {
     setGameOver(false)
   }
   // pushes a letter to the correctLetter arr
-  const pushToCorrect = letter =>
-    setCorrectLetters([...correctLetters, letter])
-
+  const pushToCorrect = letter => {
+    if (!correctLetters.includes(letter)) {
+      setCorrectLetters([
+        ...correctLetters,
+        letter
+      ])
+    }
+  }
   // pushes a letter to incorrectLetters Arr
   const pushToIncorrect = letter => {
-    setGuesses(guesses - 1)
-    setIncorrectLetters(
-      [...incorrectLetters, letter]
-    )
+    if (!incorrectLetters.includes(letter)) {
+      setGuesses(guesses - 1)
+      setIncorrectLetters([...incorrectLetters, letter])
+    }
   }
 
   // used for app-wide messages

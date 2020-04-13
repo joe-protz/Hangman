@@ -12,5 +12,8 @@ I wanted to use React for this project for two main reasons. One, if it is used 
 ## Unsolved Problems
 - I want to make the UI a bit more pleasing and less cluttered
 - Code needs some refactoring
-- Maybe a score tallyx
+- Maybe a score tally
+- Use Context API to clean up code significantly
+- Figure out why the app wont build with transitions
+
 
