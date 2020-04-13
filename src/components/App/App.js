@@ -12,6 +12,7 @@ const App = () => {
   // used to create a default to avoid making user always have to write number of guesses on new game
   const [defaultGuesses, setDefaultGuesses] = useState(undefined)
 
+  const [won, setWon] = useState(false)
   const [gameOver, setGameOver] = useState(false)
   const [msgAlerts, setMsgAlerts] = useState([])
   const [guesses, setGuesses] = useState(undefined)
@@ -276,6 +277,8 @@ const App = () => {
                 path="/play"
                 render={() => (
                   <Play
+                    won={won}
+                    setWon={setWon}
                     guesses={guesses}
                     availableLetters={availableLetters}
                     correctLetters={correctLetters}

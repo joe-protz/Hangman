@@ -13,8 +13,8 @@ const ClickableLetter = ({
       } else {
         pushToIncorrect(letter)
       }
-      // take it from the availLetter arr to re-render this component with one less letter
       removeAvailable(letter)
+      // take it from the availLetter arr to re-render this component with one less letter
     } else {
       msgAlert({
         heading: 'Oops!',

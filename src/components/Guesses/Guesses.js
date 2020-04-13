@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import NumberForm from '../NumberForm/NumberForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
@@ -42,7 +42,7 @@ const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
   }
   return (
     <AbsoluteWrapper>
-      <Fragment>
+      <div className='main-shadow'>
         <h1>Welcome to Hangman!</h1>
         <p>
           Please enter a number of guesses allowed between 1 and 20 below. If no
@@ -53,7 +53,7 @@ const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
           handleSubmit={handleSubmit}
           number={number}
         />
-      </Fragment>
+      </div>
     </AbsoluteWrapper>
   )
 }
