@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm/WordForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
@@ -51,16 +51,19 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
 
   return (
     <AbsoluteWrapper>
-      <Fragment>
+      <div className='main-shadow mt-2 p-3'>
         <h1>Welcome to Hangman!</h1>
-        <p>Please enter your secret word below. Only one word is allowed at a time and it may not contain any punctuation or numbers. </p>
+        <p>
+          Please enter your secret word below. Only one word is allowed at a
+          time and it may not contain any punctuation or numbers.{' '}
+        </p>
         <WordForm
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           word={word}
-          type='text'
+          type="text"
         />
-      </Fragment>
+      </div>
     </AbsoluteWrapper>
   )
 }

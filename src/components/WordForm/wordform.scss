@@ -1,0 +1,11 @@
+@import '../Shared/Theme.scss'; 
+
+.primary-form {
+  color: $primary !important;
+  border: 2px solid $secondary !important;
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(21, 87, 36, 0.25) !important;
+  }
+}
+

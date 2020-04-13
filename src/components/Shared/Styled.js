@@ -1,30 +1,38 @@
 import styled from 'styled-components'
 import { animated } from 'react-spring'
 // This primary button is used to create a green button used app-wide, if the props 'wrong' are set to true it is instead a unclickable red button
-const styledButton = styled.button`
-         background: transparent;
-         width: max-content;
-         font-size: 1.3rem;
-         color: #155724;
-         border-radius: 7px;
-         margin: 0.3em;
-         padding: 0.25em 1em;
-         border: 2px solid #c3e6cb;
+import { Primary, Secondary, Incorrect, IncorrectSecondary } from './Theme'
 
-         ${props =>
+const styledButton = styled.button`
+  background: transparent;
+  width: max-content;
+  font-size: 1.3rem;
+  color: ${Primary};
+  border-radius: 7px;
+  margin: 0.3em;
+  padding: 0.25em 1em;
+  border: 2px solid ${Secondary};
+  &:focus {
+    outline: thick solid ${Secondary} !important;
+  }
+
+  ${props =>
     props.wrong
       ? `
        color: white;
-       border-color: #f5c6cb;
-       background-color:#721c24;
+       border-color: ${Incorrect};
+       background-color:${IncorrectSecondary};
        cursor:default !important; 
+         &:focus {
+          outline:  thick solid ${IncorrectSecondary} !important;;
+  }
 
     `
       : `
        &:hover {
-           background: #155724;
+           background: ${Primary};
            color: white;
          }
     `}
-       `
+`
 export const PrimaryButton = animated(styledButton)

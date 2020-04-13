@@ -9,13 +9,14 @@ const NumberForm = ({ handleChange, handleSubmit, number }) => (
       onSubmit={handleSubmit}
     >
       <Form.Control
+        className="primary-form"
         name="number"
         placeholder="How many guesses are allowed?"
         value={number}
         onChange={handleChange}
-        type='number'
-        max='20'
-        min='1'
+        type="number"
+        max="20"
+        min="1"
       />
       <PrimaryButton type="submit">Submit</PrimaryButton>
     </Form>
