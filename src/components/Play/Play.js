@@ -1,14 +1,19 @@
 /* eslint-disable react/display-name */
 import React, { useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import { Spring, Transition, animated } from 'react-spring/renderprops'
+
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
 import ChangeWord from '../ChangeWord/ChangeWord'
 import GuessWord from '../GuessWord/GuessWord'
 
+import './Play.scss'
+
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
+
+import { Spring, Transition, animated } from 'react-spring/renderprops'
+import FireworksComponent from '../Fireworks/Fireworks'
 
 // this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
 const Play = ({
@@ -37,7 +42,8 @@ const Play = ({
   // set the secret word
   setSecret,
   won,
-  setWon
+  setWon,
+  setCorrectLetters
 }) => {
   // have we already told the user about a game over?
   const [alerted, setAlerted] = useState(false)
@@ -46,7 +52,18 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
+  const [showFireworks, setShowFireworks] = useState(false)
+  const [allowAnimations, setAllowAnimations] = useState(false)
 
+  const triggerWin = () => {
+    setShowFireworks(true)
+    setWon(true)
+
+    setGameOver(true)
+    setTimeout(() => {
+      setShowFireworks(false)
+    }, 5000)
+  }
   // uses the resetGame function passed from app but also resets the alert state of play component
   const resetGameAndAlert = () => {
     resetGame()
@@ -63,13 +80,9 @@ const Play = ({
   // function used by the guess word form to check if the word matches the secret
   const guessWord = (word) => {
     if (word.toLowerCase().trim() === secret.toLowerCase()) {
-      setAlerted(true)
-      msgAlert({
-        heading: 'Congratulations',
-        message: 'You successfully guessed the correct word!',
-        variant: 'success'
-      })
-      setGameOver(true)
+      const secretArr = secret.split('')
+      setCorrectLetters(secretArr)
+      triggerWin()
     } else {
       msgAlert({
         heading: 'Oops!',
@@ -114,9 +127,8 @@ const Play = ({
       message: 'You successfully guessed the correct word!',
       variant: 'success'
     })
-    setWon(true)
+    triggerWin()
     setAlerted(true)
-    setGameOver(true)
     // self explantory.
   } else if (gameOver && !alerted) {
     msgAlert({
@@ -196,6 +208,7 @@ const Play = ({
   )
   const showGuessWordBtn = !showGuessForm && !showForm && !gameOver
   const showFormButton = !showForm && !showGuessForm
+  const activeFireworks = showFireworks && allowAnimations
   return (
     <AbsoluteWrapper>
       <div className="main-shadow">
@@ -204,6 +217,18 @@ const Play = ({
           Please click a letter to guess a letter or enter a word to guess the
           whole word
         </p>
+        <div className="custom-control custom-checkbox">
+          <input
+            id="animation-checkbox"
+            className="ml-2 custom-control-input"
+            type="checkbox"
+            onChange={() => setAllowAnimations(!allowAnimations)}
+            checked={allowAnimations}
+          />
+          <label className="custom-control-label" htmlFor="animation-checkbox">
+            Would you like to allow animations for correct guesses?
+          </label>
+        </div>
         {/* reset game button */}
         <div className="inner-shadow">
           <PrimaryButton onClick={resetGameAndAlert}>
@@ -305,6 +330,7 @@ const Play = ({
         <div className="inner-shadow">
           <h3>Wrong letters:{wrongLetters}</h3>
         </div>
+        {activeFireworks && <FireworksComponent />}
       </div>
     </AbsoluteWrapper>
   )
