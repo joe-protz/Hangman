@@ -1,5 +1,5 @@
 /* eslint-disable react/display-name */
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 
 import ClickableLetter from './ClickableLetter'
@@ -52,14 +52,46 @@ const Play = ({
   const [showForm, setShowForm] = useState(false)
   // should we show the guess word form?
   const [showGuessForm, setShowGuessForm] = useState(false)
+  // while(true)fireworks will fill screen
   const [showFireworks, setShowFireworks] = useState(false)
+  // celebrate a win with fireworks? mapped to a checkbox below
   const [allowAnimations, setAllowAnimations] = useState(false)
 
+  // return if the user won
+  const didWin = () => {
+    return secret
+      .toLowerCase()
+      .split('')
+      .every(letter => correctLetters.includes(letter))
+  }
+  // trigger msgAlrts and/or fireworks based on game state
+  useEffect(() => {
+    if (didWin() && !alerted) {
+      triggerWin()
+    } else if (guesses === 0 && !gameOver && !alerted) {
+      msgAlert({
+        heading: 'Oops!',
+        message: 'You ran out of guesses! Try again!',
+        variant: 'danger'
+      })
+      setAlerted(true)
+      setGameOver(true)
+    }
+  }, [guesses, correctLetters])
+
+  // used to trigger win animations and game state change
   const triggerWin = () => {
+    msgAlert({
+      heading: 'Congratulations',
+      message: 'You successfully guessed the correct word!',
+      variant: 'success'
+    })
+    const secretArr = secret.toLowerCase().split('')
+    setCorrectLetters(secretArr)
     setShowFireworks(true)
     setWon(true)
-
     setGameOver(true)
+    setAlerted(true)
     setTimeout(() => {
       setShowFireworks(false)
     }, 5000)
@@ -80,8 +112,6 @@ const Play = ({
   // function used by the guess word form to check if the word matches the secret
   const guessWord = (word) => {
     if (word.toLowerCase().trim() === secret.toLowerCase()) {
-      const secretArr = secret.split('')
-      setCorrectLetters(secretArr)
       triggerWin()
     } else {
       msgAlert({
@@ -110,34 +140,8 @@ const Play = ({
           state: { from: location }
         }}
       />)
-    // if the guesses hit 0 and it wasnt already a game over, now game is over.
-    // needed because guesses # is not checked within letter click function or word guess function
-  } else if (guesses === 0 && !gameOver) {
-    setGameOver(true)
-    // if every letter in the seret word is in the correct letters arr, we have a winner! Set alerted to true. Note we need to do the !Alerted check or we will cause an infinite loop of setState
-  } else if (
-    secret
-      .toLowerCase()
-      .split('')
-      .every(letter => correctLetters.includes(letter)) &&
-    !alerted
-  ) {
-    msgAlert({
-      heading: 'Congratulations',
-      message: 'You successfully guessed the correct word!',
-      variant: 'success'
-    })
-    triggerWin()
-    setAlerted(true)
-    // self explantory.
-  } else if (gameOver && !alerted) {
-    msgAlert({
-      heading: 'Oops!',
-      message: 'You ran out of guesses! Try again!',
-      variant: 'danger'
-    })
-    setAlerted(true)
   }
+
   // this is where we create the blank underlines at first, and every time a correct letter is found the state change will re-render , causing that letter to be revealed.
   const revealedLetters = secret.split('').map((letter, index) => {
     if (correctLetters.includes(letter.toLowerCase())) {
@@ -154,8 +158,8 @@ const Play = ({
       )
     }
   })
-  // we dont declare here because we're reusing the available letters variable passed in through app to create a pool of clickable green letters
 
+  // the html of clickable letters, mapped using a Transition renderProp
   const availHTML = (
     <Transition
       items={availableLetters}
@@ -192,7 +196,7 @@ const Play = ({
     </Transition>
   )
 
-  // this is similar except for clarity, it has a declaration
+  // this is similar except for non-clickable letters in 'wrong letter' pool
   const wrongLetters = (
     <Transition
       items={incorrectLetters}
@@ -206,9 +210,12 @@ const Play = ({
       )}
     </Transition>
   )
+
+  // vars used for logic on what to show
   const showGuessWordBtn = !showGuessForm && !showForm && !gameOver
   const showFormButton = !showForm && !showGuessForm
   const activeFireworks = showFireworks && allowAnimations
+
   return (
     <AbsoluteWrapper>
       <div className="main-shadow">
@@ -217,6 +224,7 @@ const Play = ({
           Please click a letter to guess a letter or enter a word to guess the
           whole word
         </p>
+        {/* all of this classname crap is for a custom checkbox */}
         <div className="custom-control custom-checkbox">
           <input
             id="animation-checkbox"
@@ -234,7 +242,8 @@ const Play = ({
           <PrimaryButton onClick={resetGameAndAlert}>
             Reset Guesses
           </PrimaryButton>
-          {/* we want a double check here to stop a user from being able to open two forms at once, same with the next button */}
+
+          {/* THIS IS THE BUTTON TO SHOW THE CHANGE WORD FORM */}
           <Transition
             items={showFormButton}
             initial={null}
@@ -251,7 +260,8 @@ const Play = ({
               ))
             }
           </Transition>
-          {/* again the double check because I didnt want to allow mutliple forms open. Also disabled if game is over, so that the player cant have access to a useless button */}
+
+          {/* THIS IS THE BUTTON TO SHOW GUESS WORD FORM */}
           <Transition
             items={showGuessWordBtn}
             initial={null}
@@ -277,7 +287,8 @@ const Play = ({
               ))
             }
           </Transition>
-          {/* change word form */}
+
+          {/* CHANGE WORD FORM */}
           {showForm && (
             <Spring
               from={{ opacity: 0, maxHeight: 0 }}
@@ -296,7 +307,7 @@ const Play = ({
             </Spring>
           )}
 
-          {/* guess word form */}
+          {/* GUESS WORD FORM */}
           {showGuessForm && (
             <Spring
               from={{ opacity: 0, maxHeight: 0 }}
@@ -314,6 +325,7 @@ const Play = ({
             </Spring>
           )}
         </div>
+
         <div className="inner-shadow" id="scroll-top">
           <h3>Available letters:{availHTML}</h3>
         </div>
