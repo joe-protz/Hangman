@@ -244,7 +244,7 @@ const App = () => {
       {/* routes */}
       <main className="container">
         {transitions.map(({ item, props, key }) => (
-          <animated.div native='true' key={key} style={props}>
+          <animated.div native="true" key={key} style={props}>
             <Switch location={item}>
               {/* home */}
               <Route
@@ -287,6 +287,7 @@ const App = () => {
                     setSecret={setSecret}
                     pushToCorrect={pushToCorrect}
                     pushToIncorrect={pushToIncorrect}
+                    setCorrectLetters={setCorrectLetters}
                     removeAvailable={removeAvailable}
                     msgAlert={msgAlert}
                     resetBoard={resetBoard}
