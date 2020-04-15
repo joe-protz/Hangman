@@ -1,14 +1,14 @@
 import React, { Fragment } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
-
+import './Header.scss'
 const alwaysOptions = (
   <Fragment>
     <Nav.Link href='#/'>Start Over</Nav.Link>
   </Fragment>
 )
 
-const Header = ({ defaultGuesses }) => (
+const Header = () => (
   <Navbar bg="dark" variant="dark" expand="md">
     <Navbar.Brand href="#">
       Hangman
