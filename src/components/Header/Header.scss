@@ -1,0 +1,13 @@
+@import '../Shared/Theme.scss';
+
+a.nav-link {
+  &:hover {
+    color: $secondary !important;
+  }
+  &.active{
+    color: $secondary !important;
+  }
+}
+a.navbar-brand {
+  color:$secondary !important;
+}
