@@ -76,6 +76,7 @@ const Play = ({
       })
       setAlerted(true)
       setGameOver(true)
+      setWon(false)
     }
   }, [guesses, correctLetters])
 
