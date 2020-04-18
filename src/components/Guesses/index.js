@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import NumberForm from '../NumberForm/NumberForm'
+import NumberForm from '../NumberForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the guesses page, used to allow a user to set max guesses for a game
-
-const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, history, secret }) => {
-  // the temp number stored component level until submit
+const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
   const [number, setNumber] = useState('')
-  // handles form changes
   const handleChange = event => {
     // round up to avoid decimals and dumb users, limit the number from 1-20
     let num = Math.ceil(event.target.value)
@@ -19,17 +16,15 @@ const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
     }
     setNumber(num)
   }
-  // push the number if the user has typed one to app, or 8 otherwise, then go to the game
+
   const handleSubmit = event => {
     const defaultNum = 8
     event.preventDefault()
     setGuesses(number || defaultNum)
     setDefaultGuesses(number || defaultNum)
-    resetAllButSecretAndGuesses()
     history.push('/play')
   }
-  // if a secret hasn't been set on page load we need to go home to set one
-  // or the game will not work
+
   if (!secret) {
     return (
       <Redirect
@@ -40,6 +35,7 @@ const Guesses = ({ setDefaultGuesses, resetAllButSecretAndGuesses, setGuesses, h
       />
     )
   }
+
   return (
     <AbsoluteWrapper>
       <div className='main-shadow'>
