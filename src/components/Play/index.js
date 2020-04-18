@@ -15,55 +15,103 @@ import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 import { Spring, Transition, animated } from 'react-spring/renderprops'
 import FireworksComponent from '../Fireworks'
 
+const LETTERS = [
+  'a',
+  'b',
+  'c',
+  'd',
+  'e',
+  'f',
+  'g',
+  'h',
+  'i',
+  'j',
+  'k',
+  'l',
+  'm',
+  'n',
+  'o',
+  'p',
+  'q',
+  'r',
+  's',
+  't',
+  'u',
+  'v',
+  'w',
+  'x',
+  'y',
+  'z'
+]
 // this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
 const Play = ({
-  // num of guesses and function to set them
   guesses,
   setGuesses,
-  // access to avail letters arr
-  availableLetters,
-  // access to correct letters arr
-  correctLetters,
-  // access to incorrect letters arr
-  incorrectLetters,
-  // access to the secret word set in home component
+  defaultGuesses,
   secret,
-  // functions to change game state based on a letter chosen
-  pushToCorrect,
-  pushToIncorrect,
-  removeAvailable,
-  // the standard msg alert used
-  msgAlert,
-  // gameOver is defaulted to false and set to true whenever a game ending event happens, using setGameOver
-  gameOver,
-  setGameOver,
-  // resetGame is called to play with the same exact secret and guesses again
-  resetGame,
-  // set the secret word
   setSecret,
-  won,
-  setWon,
-  setCorrectLetters
+  msgAlert
 }) => {
-  // have we already told the user about a game over?
+  // game states -------
+  const [won, setWon] = useState(false)
+  const [gameOver, setGameOver] = useState(false)
+  const [availableLetters, setAvailableLetters] = useState(LETTERS)
+  const [correctLetters, setCorrectLetters] = useState([])
+  const [incorrectLetters, setIncorrectLetters] = useState([])
+
+  // view states --------
   const [alerted, setAlerted] = useState(false)
-  // should we show the change word form
-  // TODO: rename
-  const [showForm, setShowForm] = useState(false)
-  // should we show the guess word form?
+  const [showSecretWordForm, setShowSecretWordForm] = useState(false)
   const [showGuessForm, setShowGuessForm] = useState(false)
-  // while(true)fireworks will fill screen
   const [showFireworks, setShowFireworks] = useState(false)
-  // celebrate a win with fireworks? mapped to a checkbox below
   const [allowAnimations, setAllowAnimations] = useState(false)
 
-  // return if the user won
+  const removeAvailable = letter => {
+    const updatedLetters = [...availableLetters]
+    updatedLetters.splice(availableLetters.indexOf(letter), 1)
+    setAvailableLetters(updatedLetters)
+  }
+
+  const pushToCorrect = letter => {
+    if (!correctLetters.includes(letter)) {
+      setCorrectLetters([...correctLetters, letter])
+    }
+  }
+
+  const pushToIncorrect = letter => {
+    if (!incorrectLetters.includes(letter)) {
+      setGuesses(guesses - 1)
+      setIncorrectLetters([...incorrectLetters, letter])
+    }
+  }
+
+  // resets game state but leaves the secret and guess number
+  const resetAllButSecretAndGuesses = () => {
+    setCorrectLetters([])
+    setIncorrectLetters([])
+    setAvailableLetters(LETTERS)
+    setGameOver(false)
+    setWon(false)
+  }
+
+  const resetGame = () => {
+    setCorrectLetters([])
+    setIncorrectLetters([])
+    setGuesses(defaultGuesses)
+    setAvailableLetters(LETTERS)
+    setGameOver(false)
+    setWon(false)
+  }
+
   const didWin = () => {
     return secret
       .toLowerCase()
       .split('')
       .every(letter => correctLetters.includes(letter))
   }
+
+  useEffect(() => resetAllButSecretAndGuesses(), [])
+
   // trigger msgAlrts and/or fireworks based on game state
   useEffect(() => {
     if (didWin() && !alerted) {
@@ -97,21 +145,21 @@ const Play = ({
       setShowFireworks(false)
     }, 5000)
   }
-  // uses the resetGame function passed from app but also resets the alert state of play component
+
   const resetGameAndAlert = () => {
     resetGame()
     setAlerted(false)
   }
-  // toggles view state of change word form
+
   const toggleChangeWord = () => {
-    setShowForm(!showForm)
+    setShowSecretWordForm(!showSecretWordForm)
   }
-  // toggles view state of guess word form
+
   const toggleGuessWord = () => {
     setShowGuessForm(!showGuessForm)
   }
-  // function used by the guess word form to check if the word matches the secret
-  const guessWord = (word) => {
+
+  const guessWord = word => {
     if (word.toLowerCase().trim() === secret.toLowerCase()) {
       triggerWin()
     } else {
@@ -123,7 +171,7 @@ const Play = ({
       setGuesses(guesses - 1)
     }
   }
-  // If theres no secret or the guesses # is undefined we need to do these or the app wont work
+
   if (!secret) {
     return (
       <Redirect
@@ -140,7 +188,8 @@ const Play = ({
           pathname: '/guesses',
           state: { from: location }
         }}
-      />)
+      />
+    )
   }
 
   // this is where we create the blank underlines at first, and every time a correct letter is found the state change will re-render , causing that letter to be revealed.
@@ -180,7 +229,12 @@ const Play = ({
         padding: '0.25em 1em',
         margin: '0.3em'
       }}
-      leave={{ opacity: 0, maxWidth: '0px', padding: '0em 0em', margin: '0em' }}
+      leave={{
+        opacity: 0,
+        maxWidth: '0px',
+        padding: '0em 0em',
+        margin: '0em'
+      }}
     >
       {letter => props => (
         <ClickableLetter
@@ -213,8 +267,8 @@ const Play = ({
   )
 
   // vars used for logic on what to show
-  const showGuessWordBtn = !showGuessForm && !showForm && !gameOver
-  const showFormButton = !showForm && !showGuessForm
+  const showGuessWordBtn = !showGuessForm && !showSecretWordForm && !gameOver
+  const showSecretWordFormButton = !showSecretWordForm && !showGuessForm
   const activeFireworks = showFireworks && allowAnimations
 
   return (
@@ -246,14 +300,14 @@ const Play = ({
 
           {/* THIS IS THE BUTTON TO SHOW THE CHANGE WORD FORM */}
           <Transition
-            items={showFormButton}
+            items={showSecretWordFormButton}
             initial={null}
             from={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
             enter={{ opacity: 1, maxHeight: 'auto' }}
             leave={{ opacity: 0, maxHeight: 0 }}
           >
-            {showFormButton =>
-              showFormButton &&
+            {showSecretWordFormButton =>
+              showSecretWordFormButton &&
               (props => (
                 <PrimaryButton style={props} onClick={toggleChangeWord}>
                   Change Word?
@@ -290,7 +344,7 @@ const Play = ({
           </Transition>
 
           {/* CHANGE WORD FORM */}
-          {showForm && (
+          {showSecretWordForm && (
             <Spring
               from={{ opacity: 0, maxHeight: 0 }}
               to={{ opacity: 1, maxHeight: 'auto' }}

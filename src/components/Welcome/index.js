@@ -4,12 +4,9 @@ import WordForm from '../WordForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the home component, used to start a new game from scratch
-
-const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
-  // a component level state is used to create a word using a form. On submit we send it to app.js
+const Welcome = ({ setSecret, history, msgAlert }) => {
   const [word, setWord] = useState('')
 
-  // used for the form
   const handleChange = event => {
     // the next few lines disallow a user to type a space
     const words = event.target.value.split(/\s+/)
@@ -28,7 +25,6 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
     }
   }
 
-  // push the secret and go to the guesses page to set a #
   const handleSubmit = event => {
     const letters = word.split('')
     const minLetters = 1
@@ -44,7 +40,6 @@ const Welcome = ({ resetAllButSecret, setSecret, history, msgAlert }) => {
     } else {
       event.preventDefault()
       setSecret(word)
-      resetAllButSecret()
       history.push('/guesses')
     }
   }
