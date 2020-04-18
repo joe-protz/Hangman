@@ -25,7 +25,8 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
     guessWord(word)
   }
 
-  const cancelForm = () => {
+  const cancelForm = (event) => {
+    event.preventDefault()
     toggleGuessWord()
     setWord('')
   }

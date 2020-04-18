@@ -31,7 +31,8 @@ const ChangeWord = ({
     toggleChangeWord()
   }
 
-  const cancelForm = () => {
+  const cancelForm = (event) => {
+    event.preventDefault()
     toggleChangeWord()
     setWord('')
   }
