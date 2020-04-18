@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import WordForm from '../WordForm/WordForm'
+import WordForm from '../WordForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the home component, used to start a new game from scratch

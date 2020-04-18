@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-import NumberForm from '../NumberForm/NumberForm'
+import NumberForm from '../NumberForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the guesses page, used to allow a user to set max guesses for a game

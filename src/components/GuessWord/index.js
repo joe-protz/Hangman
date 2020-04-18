@@ -1,6 +1,6 @@
 import React, { Fragment, useState } from 'react'
 import { withRouter } from 'react-router-dom'
-import WordForm from '../WordForm/WordForm'
+import WordForm from '../WordForm'
 
 const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
   const [word, setWord] = useState('')

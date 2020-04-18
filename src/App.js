@@ -2,11 +2,11 @@ import React, { Fragment, useState } from 'react'
 import { Route, Switch, useLocation } from 'react-router-dom'
 import { useTransition, animated } from 'react-spring'
 
-import AutoDismissAlert from '../AutoDismissAlert/AutoDismissAlert'
-import Header from '../Header/Header'
-import Welcome from '../Welcome/Welcome'
-import Guesses from '../Guesses/Guesses'
-import Play from '../Play/Play'
+import AutoDismissAlert from './components/AutoDismissAlert'
+import Header from './components/Header'
+import Welcome from './components/Welcome'
+import Guesses from './components/Guesses'
+import Play from './components/Play'
 
 const App = () => {
   // used to create a default to avoid making user always have to write number of guesses on new game

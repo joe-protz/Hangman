@@ -5,15 +5,15 @@ import { withRouter, Redirect } from 'react-router-dom'
 import ClickableLetter from './ClickableLetter'
 import BadLetter from './BadLetter'
 import { PrimaryButton } from '../Shared/Styled'
-import ChangeWord from '../ChangeWord/ChangeWord'
-import GuessWord from '../GuessWord/GuessWord'
+import ChangeWord from '../ChangeWord'
+import GuessWord from '../GuessWord'
 
 import './Play.scss'
 
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 import { Spring, Transition, animated } from 'react-spring/renderprops'
-import FireworksComponent from '../Fireworks/Fireworks'
+import FireworksComponent from '../Fireworks'
 
 // this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
 const Play = ({
