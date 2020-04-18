@@ -2,8 +2,11 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 
-import ClickableLetter from './ClickableLetter'
-import BadLetter from './BadLetter'
+import AnimatedClickableLetters from '../AnimatedClickableLetters'
+import AnimatedBadLetters from '../AnimatedBadLetters'
+import RevealedLetters from '../RevealedLetters'
+import CustomCheckbox from '../CustomCheckbox'
+
 import { PrimaryButton } from '../Shared/Styled'
 import ChangeWord from '../ChangeWord'
 import GuessWord from '../GuessWord'
@@ -12,8 +15,10 @@ import './Play.scss'
 
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
-import { Spring, Transition, animated } from 'react-spring/renderprops'
+import { Spring, animated } from 'react-spring/renderprops'
 import FireworksComponent from '../Fireworks'
+import AnimatedShowGeuessWordBtn from '../AnimatedShowGuessWordBtn'
+import AnimatedShowSecretWordFormBtn from '../AnimatedShowSecretWordFormBtn'
 
 const LETTERS = [
   'a',
@@ -66,6 +71,48 @@ const Play = ({
   const [showFireworks, setShowFireworks] = useState(false)
   const [allowAnimations, setAllowAnimations] = useState(false)
 
+  if (!secret) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/',
+          state: { from: location }
+        }}
+      />
+    )
+  } else if (guesses === undefined) {
+    return (
+      <Redirect
+        to={{
+          pathname: '/guesses',
+          state: { from: location }
+        }}
+      />
+    )
+  }
+
+  useEffect(() => {
+    resetAllButSecretAndGuesses()
+    return () => {
+      cleanUp()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (didWin() && !alerted) {
+      triggerWin()
+    } else if (guesses === 0 && !gameOver && !alerted) {
+      msgAlert({
+        heading: 'Oops!',
+        message: 'You ran out of guesses! Try again!',
+        variant: 'danger'
+      })
+      setAlerted(true)
+      setGameOver(true)
+      setWon(false)
+    }
+  }, [guesses, correctLetters])
+
   const removeAvailable = letter => {
     const updatedLetters = [...availableLetters]
     updatedLetters.splice(availableLetters.indexOf(letter), 1)
@@ -85,7 +132,6 @@ const Play = ({
     }
   }
 
-  // resets game state but leaves the secret and guess number
   const resetAllButSecretAndGuesses = () => {
     setCorrectLetters([])
     setIncorrectLetters([])
@@ -103,6 +149,11 @@ const Play = ({
     setWon(false)
   }
 
+  const cleanUp = () => {
+    setSecret('')
+    setGuesses(undefined)
+  }
+
   const didWin = () => {
     return secret
       .toLowerCase()
@@ -110,25 +161,6 @@ const Play = ({
       .every(letter => correctLetters.includes(letter))
   }
 
-  useEffect(() => resetAllButSecretAndGuesses(), [])
-
-  // trigger msgAlrts and/or fireworks based on game state
-  useEffect(() => {
-    if (didWin() && !alerted) {
-      triggerWin()
-    } else if (guesses === 0 && !gameOver && !alerted) {
-      msgAlert({
-        heading: 'Oops!',
-        message: 'You ran out of guesses! Try again!',
-        variant: 'danger'
-      })
-      setAlerted(true)
-      setGameOver(true)
-      setWon(false)
-    }
-  }, [guesses, correctLetters])
-
-  // used to trigger win animations and game state change
   const triggerWin = () => {
     msgAlert({
       heading: 'Congratulations',
@@ -172,100 +204,6 @@ const Play = ({
     }
   }
 
-  if (!secret) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/',
-          state: { from: location }
-        }}
-      />
-    )
-  } else if (guesses === undefined) {
-    return (
-      <Redirect
-        to={{
-          pathname: '/guesses',
-          state: { from: location }
-        }}
-      />
-    )
-  }
-
-  // this is where we create the blank underlines at first, and every time a correct letter is found the state change will re-render , causing that letter to be revealed.
-  const revealedLetters = secret.split('').map((letter, index) => {
-    if (correctLetters.includes(letter.toLowerCase())) {
-      return (
-        <div className="col-1 rev p-0 school-font" key={index}>
-          {letter}
-        </div>
-      )
-    } else {
-      return (
-        <div className="col-1 rev p-0 school-font" key={index}>
-          &nbsp;
-        </div>
-      )
-    }
-  })
-
-  // the html of clickable letters, mapped using a Transition renderProp
-  const availHTML = (
-    <Transition
-      items={availableLetters}
-      keys={item => item}
-      initial={null}
-      from={{
-        opacity: 0,
-        maxWidth: '0px',
-        overflow: 'hidden',
-        padding: '0em 0em',
-        margin: '0em'
-      }}
-      enter={{
-        opacity: 1,
-        maxWidth: '100px',
-        overflow: 'visible',
-        padding: '0.25em 1em',
-        margin: '0.3em'
-      }}
-      leave={{
-        opacity: 0,
-        maxWidth: '0px',
-        padding: '0em 0em',
-        margin: '0em'
-      }}
-    >
-      {letter => props => (
-        <ClickableLetter
-          style={{ ...props, transition: 'ease' }}
-          pushToCorrect={pushToCorrect}
-          pushToIncorrect={pushToIncorrect}
-          secret={secret}
-          removeAvailable={removeAvailable}
-          letter={letter}
-          gameOver={gameOver}
-          msgAlert={msgAlert}
-        />
-      )}
-    </Transition>
-  )
-
-  // this is similar except for non-clickable letters in 'wrong letter' pool
-  const wrongLetters = (
-    <Transition
-      items={incorrectLetters}
-      keys={item => item}
-      from={{ opacity: 0, transform: 'translate(0,-300px)' }}
-      enter={{ opacity: 1, transform: 'translate(0,0)' }}
-      leave={{ opacity: 0, transform: 'translate(0,-300px)' }}
-    >
-      {letter => props => (
-        <BadLetter letter={letter} wrong={true} style={props} />
-      )}
-    </Transition>
-  )
-
   // vars used for logic on what to show
   const showGuessWordBtn = !showGuessForm && !showSecretWordForm && !gameOver
   const showSecretWordFormButton = !showSecretWordForm && !showGuessForm
@@ -274,24 +212,13 @@ const Play = ({
   return (
     <AbsoluteWrapper>
       <div className="main-shadow">
-        {/* guesses will be dynamically updated from state rerenders */}
         <p>
           Please click a letter to guess a letter or enter a word to guess the
           whole word
         </p>
-        {/* all of this classname crap is for a custom checkbox */}
-        <div className="custom-control custom-checkbox">
-          <input
-            id="animation-checkbox"
-            className="ml-2 custom-control-input"
-            type="checkbox"
-            onChange={() => setAllowAnimations(!allowAnimations)}
-            checked={allowAnimations}
-          />
-          <label className="custom-control-label" htmlFor="animation-checkbox">
-            Would you like to allow animations for correct guesses?
-          </label>
-        </div>
+        <CustomCheckbox
+          onChange={() => setAllowAnimations(!allowAnimations)}
+          checked={allowAnimations} />
         {/* reset game button */}
         <div className="inner-shadow">
           <PrimaryButton onClick={resetGameAndAlert}>
@@ -299,50 +226,15 @@ const Play = ({
           </PrimaryButton>
 
           {/* THIS IS THE BUTTON TO SHOW THE CHANGE WORD FORM */}
-          <Transition
-            items={showSecretWordFormButton}
-            initial={null}
-            from={{ opacity: 0, maxHeight: 0, overflow: 'hidden' }}
-            enter={{ opacity: 1, maxHeight: 'auto' }}
-            leave={{ opacity: 0, maxHeight: 0 }}
-          >
-            {showSecretWordFormButton =>
-              showSecretWordFormButton &&
-              (props => (
-                <PrimaryButton style={props} onClick={toggleChangeWord}>
-                  Change Word?
-                </PrimaryButton>
-              ))
-            }
-          </Transition>
-
+          <AnimatedShowSecretWordFormBtn
+            showSecretWordFormButton={showSecretWordFormButton}
+            toggleChangeWord={toggleChangeWord}
+          />
           {/* THIS IS THE BUTTON TO SHOW GUESS WORD FORM */}
-          <Transition
-            items={showGuessWordBtn}
-            initial={null}
-            from={{
-              opacity: 0,
-              maxHeight: 0,
-              overflow: 'hidden',
-              transform: 'translate(100%,0)'
-            }}
-            enter={{
-              opacity: 1,
-              maxHeight: 'auto',
-              transform: 'translate(0,0)'
-            }}
-            leave={{ opacity: 0, maxHeight: 0 }}
-          >
-            {showGuessWordBtn =>
-              showGuessWordBtn &&
-              (props => (
-                <PrimaryButton style={props} onClick={toggleGuessWord}>
-                  Guess Full Word?
-                </PrimaryButton>
-              ))
-            }
-          </Transition>
-
+          <AnimatedShowGeuessWordBtn
+            showGuessWordBtn={showGuessWordBtn}
+            toggleGuessWord={toggleGuessWord}
+          />
           {/* CHANGE WORD FORM */}
           {showSecretWordForm && (
             <Spring
@@ -380,23 +272,27 @@ const Play = ({
             </Spring>
           )}
         </div>
+        <AnimatedClickableLetters
+          availableLetters={availableLetters}
+          pushToCorrect={pushToCorrect}
+          pushToIncorrect={pushToIncorrect}
+          removeAvailable={removeAvailable}
+          secret={secret}
+          gameOver={gameOver}
+          msgAlert={msgAlert}
+        />
 
-        <div className="inner-shadow" id="scroll-top">
-          <h3>Available letters:{availHTML}</h3>
-        </div>
-        <div className="row mb-3 inner-shadow d">
-          {!gameOver && <h3 className="col-12">Guesses Left: {guesses}</h3>}
-          {gameOver &&
-            (won ? (
-              <h3 className="col-12">You Won!</h3>
-            ) : (
-              <h3 className="col-12">Game Over!</h3>
-            ))}
-          {revealedLetters}
-        </div>
-        <div className="inner-shadow">
-          <h3>Wrong letters:{wrongLetters}</h3>
-        </div>
+        <RevealedLetters
+          secret={secret}
+          correctLetters={correctLetters}
+          gameOver={gameOver}
+          guesses={guesses}
+          won={won}
+        />
+
+        <AnimatedBadLetters
+          incorrectLetters={incorrectLetters}
+        />
         {activeFireworks && <FireworksComponent />}
       </div>
     </AbsoluteWrapper>

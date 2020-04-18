@@ -34,7 +34,7 @@ const Welcome = ({ setSecret, history, msgAlert }) => {
       event.preventDefault()
       msgAlert({
         heading: 'Whoops!',
-        message: 'Must enter at least once letter',
+        message: 'Must enter at least one letter',
         variant: 'danger'
       })
     } else {
