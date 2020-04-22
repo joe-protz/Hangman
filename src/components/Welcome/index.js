@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
@@ -6,6 +6,10 @@ import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 // this is the home component, used to start a new game from scratch
 const Welcome = ({ setSecret, history, msgAlert }) => {
   const [word, setWord] = useState('')
+  const inputRef = useRef(null)
+  useEffect(() => {
+    setTimeout(() => inputRef.current.focus(), 800)
+  }, [])
 
   const handleChange = event => {
     // the next few lines disallow a user to type a space
@@ -57,6 +61,7 @@ const Welcome = ({ setSecret, history, msgAlert }) => {
           handleSubmit={handleSubmit}
           word={word}
           type="text"
+          reference={inputRef}
         />
       </div>
     </AbsoluteWrapper>

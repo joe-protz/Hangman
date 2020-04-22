@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useRef, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 // the component used to change the secret from within Play
@@ -9,6 +9,12 @@ const ChangeWord = ({
   toggleChangeWord
 }) => {
   const [word, setWord] = useState('')
+
+  const inputRef = useRef(null)
+  useEffect(() => {
+    setTimeout(() => inputRef.current.focus(), 1)
+  }, [])
+
   const handleChange = event => {
     const words = event.target.value.split(/\s+/)
     const maxWords = 1
@@ -49,6 +55,7 @@ const ChangeWord = ({
         type="text"
         cancel={true}
         cancelForm={cancelForm}
+        reference={inputRef}
       />
     </Fragment>
   )
