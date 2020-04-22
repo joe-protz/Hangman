@@ -1,27 +1,26 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 import NumberForm from '../NumberForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the guesses page, used to allow a user to set max guesses for a game
 const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
-  const [number, setNumber] = useState('')
+  const [number, setNumber] = useState(8)
+
+  const inputRef = useRef(null)
+  useEffect(() => {
+    setTimeout(() => inputRef.current.focus(), 800)
+  }, [])
+
   const handleChange = event => {
-    // round up to avoid decimals and dumb users, limit the number from 1-20
-    let num = Math.ceil(event.target.value)
-    if (num > 20) {
-      num = 20
-    } else if (num < 0) {
-      num = 1
-    }
+    const num = event.target.value
     setNumber(num)
   }
 
   const handleSubmit = event => {
-    const defaultNum = 8
     event.preventDefault()
-    setGuesses(number || defaultNum)
-    setDefaultGuesses(number || defaultNum)
+    setGuesses(number)
+    setDefaultGuesses(number)
     history.push('/play')
   }
 
@@ -48,6 +47,7 @@ const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
           handleChange={handleChange}
           handleSubmit={handleSubmit}
           number={number}
+          reference={inputRef}
         />
       </div>
     </AbsoluteWrapper>

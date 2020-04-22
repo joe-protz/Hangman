@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useRef } from 'react'
 import { Route, Switch, useLocation } from 'react-router-dom'
 import { useTransition, animated } from 'react-spring'
 
@@ -14,6 +14,7 @@ const App = () => {
   const [secret, setSecret] = useState('')
   const [msgAlerts, setMsgAlerts] = useState([])
   const [defaultGuesses, setDefaultGuesses] = useState(undefined)
+  const [msgId, setMsgId] = useState(100)
 
   const transitions = useTransition(location, location => location.pathname, {
     native: true,
@@ -25,7 +26,19 @@ const App = () => {
 
   // used for app-wide messages
   const msgAlert = ({ heading, message, variant }) => {
-    setMsgAlerts([...msgAlerts, { heading, message, variant }])
+    const msgObject = { heading, message, variant, id: msgId }
+    setMsgAlerts([
+      ...msgAlerts, msgObject
+    ])
+    setMsgId(msgId + 1)
+  }
+
+  const msgRef = useRef(msgAlerts)
+  msgRef.current = msgAlerts
+
+  const removeMsgAlrt = (id) => {
+    const tmp = msgRef.current.filter(msg => msg.id !== id)
+    setMsgAlerts(tmp)
   }
 
   return (
@@ -33,10 +46,12 @@ const App = () => {
       <Header defaultGuesses={defaultGuesses} />
       {msgAlerts.map((msgAlert, index) => (
         <AutoDismissAlert
-          key={index}
+          key={`msgAlert.message_${index}`}
           heading={msgAlert.heading}
           variant={msgAlert.variant}
           message={msgAlert.message}
+          id={msgAlert.id}
+          destroy={removeMsgAlrt}
         />
       ))}
       {/* routes */}
@@ -49,10 +64,7 @@ const App = () => {
                 exact
                 path="/"
                 render={() => (
-                  <Welcome
-                    msgAlert={msgAlert}
-                    setSecret={setSecret}
-                  />
+                  <Welcome msgAlert={msgAlert} msgId={msgId} setSecret={setSecret} />
                 )}
               />
 

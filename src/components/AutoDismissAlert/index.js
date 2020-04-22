@@ -1,48 +1,36 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import Alert from 'react-bootstrap/Alert'
 
 import './AutoDismissAlert.scss'
 
 // a simple alert that uses custom css to bounce in and automatically fade
-class AutoDismissAlert extends React.Component {
-  constructor (props) {
-    super(props)
-
-    this.state = {
-      show: true
-    }
-  }
-
-  componentDidMount () {
-    this.timer = setInterval(() => {
-      this.setState({ show: false })
+const AutoDismissAlert = ({ variant, heading, message, destroy, id }) => {
+  const [show, setShow] = useState(true)
+  useEffect(() => {
+    setTimeout(() => {
+      destroy(id)
     }, 3300)
-  }
+  }, [])
 
-  componentWillUnmount () {
-    clearInterval(this.timer)
-  }
+  const handleClose = () => setShow(false)
 
-  handleClose = () => this.setState({ show: false })
+  return (
 
-  render () {
-    const { variant, heading, message } = this.props
-    return (
-      <Alert
-        dismissible
-        show={this.state.show}
-        variant={variant}
-        onClose={this.handleClose}
-      >
-        <div className="container">
-          <Alert.Heading>
-            {heading}
-          </Alert.Heading>
-          <p className="alert-body">{message}</p>
-        </div>
-      </Alert>
-    )
-  }
+    <Alert
+      dismissible
+      show={show}
+      variant={variant}
+      onClose={handleClose}
+    >
+      <div className="container">
+        <Alert.Heading>
+          {heading}
+        </Alert.Heading>
+        <p className="alert-body">{message}</p>
+      </div>
+    </Alert>
+
+  )
 }
 
 export default AutoDismissAlert
