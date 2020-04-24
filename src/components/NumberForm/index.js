@@ -1,8 +1,10 @@
 import React from 'react'
 import Form from 'react-bootstrap/Form'
-import { PrimaryButton } from '../Shared/Styled'
+import PrimaryButton from '../Shared/Styled'
 
-const NumberForm = ({ handleChange, handleSubmit, number, reference }) => {
+const NumberForm = ({
+  handleChange, handleSubmit, number, reference
+}) => {
   const inputs = [...Array(20).keys()].map(i => {
     const incrementedI = i + 1
     return (

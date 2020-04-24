@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react'
+import React, {
+  Fragment, useState, useRef, useEffect
+} from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 
@@ -32,7 +34,7 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
     guessWord(word)
   }
 
-  const cancelForm = (event) => {
+  const cancelForm = event => {
     event.preventDefault()
     toggleGuessWord()
     setWord('')
@@ -46,7 +48,7 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
         handleSubmit={handleSubmit}
         word={word}
         type="text"
-        cancel={true}
+        cancel
         cancelForm={cancelForm}
         reference={inputRef}
       />

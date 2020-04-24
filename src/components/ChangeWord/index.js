@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react'
+import React, {
+  useState, useRef, useEffect, Fragment
+} from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 // the component used to change the secret from within Play
@@ -37,7 +39,7 @@ const ChangeWord = ({
     toggleChangeWord()
   }
 
-  const cancelForm = (event) => {
+  const cancelForm = event => {
     event.preventDefault()
     toggleChangeWord()
     setWord('')
@@ -53,7 +55,7 @@ const ChangeWord = ({
         handleSubmit={handleSubmit}
         word={word}
         type="text"
-        cancel={true}
+        cancel
         cancelForm={cancelForm}
         reference={inputRef}
       />

@@ -4,7 +4,9 @@ import NumberForm from '../NumberForm'
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
 // this is the guesses page, used to allow a user to set max guesses for a game
-const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
+const Guesses = ({
+  setDefaultGuesses, setGuesses, history, secret
+}) => {
   const [number, setNumber] = useState(8)
 
   const inputRef = useRef(null)
@@ -28,8 +30,7 @@ const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
     return (
       <Redirect
         to={{
-          pathname: '/',
-          state: { from: location }
+          pathname: '/'
         }}
       />
     )
@@ -37,7 +38,7 @@ const Guesses = ({ setDefaultGuesses, setGuesses, history, secret }) => {
 
   return (
     <AbsoluteWrapper>
-      <div className='main-shadow'>
+      <div className="main-shadow">
         <h1>Welcome to Hangman!</h1>
         <p>
           Please enter a number of guesses allowed between 1 and 20 below. If no

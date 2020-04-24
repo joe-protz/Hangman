@@ -2,9 +2,10 @@ import React, { Fragment } from 'react'
 import Nav from 'react-bootstrap/Nav'
 import Navbar from 'react-bootstrap/Navbar'
 import './Header.scss'
+
 const alwaysOptions = (
   <Fragment>
-    <Nav.Link href='#/'>Start Over</Nav.Link>
+    <Nav.Link href="#/">Start Over</Nav.Link>
   </Fragment>
 )
 

@@ -19,7 +19,8 @@ const FireworksComponent = () => {
         y: Math.floor(Math.random() * Math.floor(window.innerHeight)) - 200
       })
     }
-    return <Fireworks key={i} {...fxProps}></Fireworks>
+    // eslint-disable-next-line react/jsx-props-no-spreading
+    return <Fireworks key={i} {...fxProps} />
   })
   return (
     <div>

@@ -1,13 +1,13 @@
-/* eslint-disable react/display-name */
 import React, { useState, useEffect } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 
+import { Spring, animated } from 'react-spring/renderprops'
 import AnimatedClickableLetters from '../AnimatedClickableLetters'
 import AnimatedBadLetters from '../AnimatedBadLetters'
 import RevealedLetters from '../RevealedLetters'
 import CustomCheckbox from '../CustomCheckbox'
 
-import { PrimaryButton } from '../Shared/Styled'
+import PrimaryButton from '../Shared/Styled'
 import ChangeWord from '../ChangeWord'
 import GuessWord from '../GuessWord'
 
@@ -15,7 +15,6 @@ import './Play.scss'
 
 import AbsoluteWrapper from '../Shared/AbsoluteWrapper'
 
-import { Spring, animated } from 'react-spring/renderprops'
 import FireworksComponent from '../Fireworks'
 import AnimatedShowGeuessWordBtn from '../AnimatedShowGuessWordBtn'
 import AnimatedShowSecretWordFormBtn from '../AnimatedShowSecretWordFormBtn'
@@ -48,7 +47,8 @@ const LETTERS = [
   'y',
   'z'
 ]
-// this is the main page to play the game. It handles most of the game logic and passes what is needed to app.js
+// this is the main page to play the game. It handles most of the game
+// logic and passes what is needed to app.js
 const Play = ({
   guesses,
   setGuesses,
@@ -75,17 +75,15 @@ const Play = ({
     return (
       <Redirect
         to={{
-          pathname: '/',
-          state: { from: location }
+          pathname: '/'
         }}
       />
     )
-  } else if (guesses === undefined) {
+  } if (guesses === undefined) {
     return (
       <Redirect
         to={{
-          pathname: '/guesses',
-          state: { from: location }
+          pathname: '/guesses'
         }}
       />
     )
@@ -154,12 +152,10 @@ const Play = ({
     setGuesses(undefined)
   }
 
-  const didWin = () => {
-    return secret
-      .toLowerCase()
-      .split('')
-      .every(letter => correctLetters.includes(letter))
-  }
+  const didWin = () => secret
+    .toLowerCase()
+    .split('')
+    .every(letter => correctLetters.includes(letter))
 
   const triggerWin = () => {
     msgAlert({
@@ -218,7 +214,8 @@ const Play = ({
         </p>
         <CustomCheckbox
           onChange={() => setAllowAnimations(!allowAnimations)}
-          checked={allowAnimations} />
+          checked={allowAnimations}
+        />
         {/* reset game button */}
         <div className="inner-shadow">
           <PrimaryButton onClick={resetGameAndAlert}>

@@ -50,11 +50,12 @@ const Welcome = ({ setSecret, history, msgAlert }) => {
 
   return (
     <AbsoluteWrapper>
-      <div className='main-shadow mt-2 p-3'>
+      <div className="main-shadow mt-2 p-3">
         <h1>Welcome to Hangman!</h1>
         <p>
           Please enter your secret word below. Only one word is allowed at a
-          time and it may not contain any punctuation or numbers.{' '}
+          time and it may not contain any punctuation or numbers.
+          {' '}
         </p>
         <WordForm
           handleChange={handleChange}
