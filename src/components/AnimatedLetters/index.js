@@ -3,11 +3,23 @@
 import React from 'react'
 import { Transition } from 'react-spring/renderprops'
 import ClickableLetter from '../Play/ClickableLetter'
+import BadLetter from '../Play/BadLetter'
 
 const AnimatedClickableLetters = ({
-  availableLetters, onClick
+  availableLetters, onClick, incorrectLetters
 }) => {
-  const letters = (
+  const badLetters = (
+    <Transition
+      items={incorrectLetters}
+      keys={item => item}
+      from={{ opacity: 0, transform: 'translate(0,-300px)' }}
+      enter={{ opacity: 1, transform: 'translate(0,0)' }}
+      leave={{ opacity: 0, transform: 'translate(0,-300px)' }}
+    >
+      {letter => props => <BadLetter letter={letter} wrong style={props} />}
+    </Transition>
+  )
+  const availLetters = (
     <Transition
       items={availableLetters}
       keys={item => item}
@@ -44,11 +56,19 @@ const AnimatedClickableLetters = ({
   )
 
   return (
-    <div className="inner-shadow" id="scroll-top">
-      <h3>
-        Available letters:
-        { letters }
-      </h3>
+    <div className="row inner-shadow" id="scroll-top">
+      <div className="col-lg-6">
+        <h3 className="text-center">
+        Available letters
+        </h3>
+        { availLetters }
+      </div>
+      <div className="col-lg-6 d-none d-lg-inline-block incorrect">
+        <h3 className="text-center">
+        Incorrect letters
+        </h3>
+        { badLetters }
+      </div>
     </div>
   )
 }
