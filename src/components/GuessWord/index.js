@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react'
+import React, {
+  Fragment, useState, useRef, useEffect
+} from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 
@@ -12,27 +14,16 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
   }, [])
 
   const handleChange = event => {
-    const words = event.target.value.split(/\s+/)
-    const maxWords = 1
-    const numWords = words.length
-    if (numWords > maxWords) {
-      event.preventDefault()
-      msgAlert({
-        heading: 'Whoops!',
-        message: 'Maximum number of words is one',
-        variant: 'danger'
-      })
-    } else {
-      setWord(event.target.value.replace(/[^a-z]/gi, ''))
-    }
+    setWord(event.target.value.replace(/[^a-z ]/gi, ''))
   }
+
   const handleSubmit = event => {
     event.preventDefault()
     toggleGuessWord()
-    guessWord(word)
+    guessWord(word.trim())
   }
 
-  const cancelForm = (event) => {
+  const cancelForm = event => {
     event.preventDefault()
     toggleGuessWord()
     setWord('')
@@ -46,7 +37,7 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
         handleSubmit={handleSubmit}
         word={word}
         type="text"
-        cancel={true}
+        cancel
         cancelForm={cancelForm}
         reference={inputRef}
       />

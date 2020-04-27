@@ -12,21 +12,8 @@ const Welcome = ({ setSecret, history, msgAlert }) => {
   }, [])
 
   const handleChange = event => {
-    // the next few lines disallow a user to type a space
-    const words = event.target.value.split(/\s+/)
-    const maxWords = 1
-    const numWords = words.length
-    if (numWords > maxWords) {
-      event.preventDefault()
-      msgAlert({
-        heading: 'Whoops!',
-        message: 'Maximum number of words is one',
-        variant: 'danger'
-      })
-      // we don't allow anything except letters, case insensitive
-    } else {
-      setWord(event.target.value.replace(/[^a-z]/gi, ''))
-    }
+    // we don't allow anything except letters, case insensitive
+    setWord(event.target.value.replace(/[^a-z ]/gi, ''))
   }
 
   const handleSubmit = event => {
@@ -43,18 +30,18 @@ const Welcome = ({ setSecret, history, msgAlert }) => {
       })
     } else {
       event.preventDefault()
-      setSecret(word)
+      setSecret(word.trim())
       history.push('/guesses')
     }
   }
 
   return (
     <AbsoluteWrapper>
-      <div className='main-shadow mt-2 p-3'>
+      <div className="main-shadow mt-2 p-3">
         <h1>Welcome to Hangman!</h1>
         <p>
-          Please enter your secret word below. Only one word is allowed at a
-          time and it may not contain any punctuation or numbers.{' '}
+          Please enter your secret word or phrase below.
+          {' '}
         </p>
         <WordForm
           handleChange={handleChange}

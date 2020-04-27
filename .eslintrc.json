@@ -16,8 +16,17 @@
       "browser": true
   },
   "rules": {
+    "comma-dangle": ["error", "never"],
+    "react/display-name":"off",
+    "react/jsx-filename-extension": "off",
+    "arrow-parens":["error", "as-needed"],
     "prefer-const": "error",
     "no-var": "error",
+    "no-shadow":"off",
+    "react/no-array-index-key":"off",
+    "jsx-a11y/label-has-associated-control":"off",
+    "react/jsx-props-no-spreading":"off",
+    "react/jsx-fragments":"off",
     "semi": [
       "error",
       "never"

@@ -4,7 +4,9 @@ import Alert from 'react-bootstrap/Alert'
 import './AutoDismissAlert.scss'
 
 // a simple alert that uses custom css to bounce in and automatically fade
-const AutoDismissAlert = ({ variant, heading, message, destroy, id }) => {
+const AutoDismissAlert = ({
+  variant, heading, message, destroy, id
+}) => {
   const [show, setShow] = useState(true)
   useEffect(() => {
     setTimeout(() => {
