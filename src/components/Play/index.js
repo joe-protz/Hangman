@@ -124,20 +124,20 @@ const Play = ({
   }
 
   const pushValue = useCallback(letter => {
-    if (!gameOver) {
-      if (secret.toLowerCase().includes(letter)) {
-        pushToCorrect(letter)
-      } else {
-        pushToIncorrect(letter)
-      }
-      removeAvailable(letter)
-    } else {
+    if (gameOver) {
       msgAlert({
         heading: 'Oops!',
         message: 'Game is over, please click reset to play again',
         variant: 'danger'
       })
+      return
     }
+    if (secret.toLowerCase().includes(letter)) {
+      pushToCorrect(letter)
+    } else {
+      pushToIncorrect(letter)
+    }
+    removeAvailable(letter)
   }
   )
 
@@ -228,7 +228,7 @@ const Play = ({
       <div className="main-shadow">
         <p>
           Please click a letter to guess a letter or enter a word to guess the
-          whole word
+          whole word.
         </p>
         <CustomCheckbox
           onChange={() => setAllowAnimations(!allowAnimations)}
