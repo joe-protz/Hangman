@@ -18,7 +18,7 @@ const AnimatedBadLetters = ({ incorrectLetters }) => {
   return (
     <div className="inner-shadow">
       <h3>
-        Available letters:
+        Incorrect letters:
         {letters}
       </h3>
     </div>
