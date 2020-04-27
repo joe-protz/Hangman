@@ -6,13 +6,21 @@ const RevealedLetters = ({
   const revealedLetters = secret.split('').map((letter, index) => {
     if (correctLetters.includes(letter.toLowerCase())) {
       return (
-        <div className="col-1 rev p-0 school-font" key={index}>
+        <div className={
+          letter === ' '
+            ? 'col-1 rev p-0 school-font space'
+            : 'col-1 rev p-0 school-font' }
+        key={index}>
           {letter}
         </div>
       )
     }
     return (
-      <div className="col-1 rev p-0 school-font" key={index}>
+      <div className={
+        letter === ' '
+          ? 'col-1 rev p-0 school-font space'
+          : 'col-1 rev p-0 school-font' }
+      key={index}>
           &nbsp;
       </div>
     )

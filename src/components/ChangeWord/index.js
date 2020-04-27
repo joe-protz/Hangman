@@ -18,23 +18,12 @@ const ChangeWord = ({
   }, [])
 
   const handleChange = event => {
-    const words = event.target.value.split(/\s+/)
-    const maxWords = 1
-    const numWords = words.length
-    if (numWords > maxWords) {
-      event.preventDefault()
-      msgAlert({
-        heading: 'Whoops!',
-        message: 'Maximum number of words is one',
-        variant: 'danger'
-      })
-    } else {
-      setWord(event.target.value.replace(/[^a-z]/gi, ''))
-    }
+    setWord(event.target.value.replace(/[^a-z ]/gi, ''))
   }
+
   const handleSubmit = event => {
     event.preventDefault()
-    setSecret(word)
+    setSecret(word.trim())
     resetGameAndAlert()
     toggleChangeWord()
   }

@@ -173,6 +173,7 @@ const Play = ({
   const didWin = () => secret
     .toLowerCase()
     .split('')
+    .filter(letter => letter !== ' ')
     .every(letter => correctLetters.includes(letter))
 
   const triggerWin = () => {
