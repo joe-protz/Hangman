@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useRef } from 'react'
+import React, { useState, useRef, Fragment } from 'react'
 import { Route, Switch, useLocation } from 'react-router-dom'
 import { useTransition, animated } from 'react-spring'
 
@@ -26,7 +26,9 @@ const App = () => {
 
   // used for app-wide messages
   const msgAlert = ({ heading, message, variant }) => {
-    const msgObject = { heading, message, variant, id: msgId }
+    const msgObject = {
+      heading, message, variant, id: msgId
+    }
     setMsgAlerts([
       ...msgAlerts, msgObject
     ])
@@ -36,7 +38,7 @@ const App = () => {
   const msgRef = useRef(msgAlerts)
   msgRef.current = msgAlerts
 
-  const removeMsgAlrt = (id) => {
+  const removeMsgAlrt = id => {
     const tmp = msgRef.current.filter(msg => msg.id !== id)
     setMsgAlerts(tmp)
   }

@@ -1,4 +1,6 @@
-import React, { Fragment, useState, useRef, useEffect } from 'react'
+import React, {
+  useState, useRef, useEffect, Fragment
+} from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
 // the component used to change the secret from within Play
@@ -16,28 +18,17 @@ const ChangeWord = ({
   }, [])
 
   const handleChange = event => {
-    const words = event.target.value.split(/\s+/)
-    const maxWords = 1
-    const numWords = words.length
-    if (numWords > maxWords) {
-      event.preventDefault()
-      msgAlert({
-        heading: 'Whoops!',
-        message: 'Maximum number of words is one',
-        variant: 'danger'
-      })
-    } else {
-      setWord(event.target.value.replace(/[^a-z]/gi, ''))
-    }
+    setWord(event.target.value.replace(/[^a-z ]/gi, ''))
   }
+
   const handleSubmit = event => {
     event.preventDefault()
-    setSecret(word)
+    setSecret(word.trim())
     resetGameAndAlert()
     toggleChangeWord()
   }
 
-  const cancelForm = (event) => {
+  const cancelForm = event => {
     event.preventDefault()
     toggleChangeWord()
     setWord('')
@@ -53,7 +44,7 @@ const ChangeWord = ({
         handleSubmit={handleSubmit}
         word={word}
         type="text"
-        cancel={true}
+        cancel
         cancelForm={cancelForm}
         reference={inputRef}
       />
