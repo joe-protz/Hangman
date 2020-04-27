@@ -2,8 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 
 import { Spring, animated } from 'react-spring/renderprops'
-import AnimatedClickableLetters from '../AnimatedClickableLetters'
-import AnimatedBadLetters from '../AnimatedBadLetters'
+import AnimatedLetters from '../AnimatedLetters'
 import RevealedLetters from '../RevealedLetters'
 import CustomCheckbox from '../CustomCheckbox'
 
@@ -288,9 +287,10 @@ const Play = ({
             </Spring>
           )}
         </div>
-        <AnimatedClickableLetters
+        <AnimatedLetters
           availableLetters={availableLetters}
           onClick={pushValue}
+          incorrectLetters={incorrectLetters}
         />
 
         <RevealedLetters
@@ -301,9 +301,9 @@ const Play = ({
           won={won}
         />
 
-        <AnimatedBadLetters
+        {/* <AnimatedBadLetters
           incorrectLetters={incorrectLetters}
-        />
+        /> */}
         {activeFireworks && <FireworksComponent />}
       </div>
     </AbsoluteWrapper>
