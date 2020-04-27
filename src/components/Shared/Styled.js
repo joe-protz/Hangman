@@ -31,10 +31,12 @@ const styledButton = styled.button`
 
     `
     : `
-       &:hover {
+        @media(hover: hover) {
+         &:hover {
            background: ${Primary};
            color: white;
          }
+        }
     `)}
 `
 const PrimaryButton = animated(styledButton)
