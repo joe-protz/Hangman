@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
 
 import { Spring, animated } from 'react-spring/renderprops'
@@ -122,6 +122,24 @@ const Play = ({
       setCorrectLetters([...correctLetters, letter])
     }
   }
+
+  const pushValue = useCallback(letter => {
+    if (!gameOver) {
+      if (secret.toLowerCase().includes(letter)) {
+        pushToCorrect(letter)
+      } else {
+        pushToIncorrect(letter)
+      }
+      removeAvailable(letter)
+    } else {
+      msgAlert({
+        heading: 'Oops!',
+        message: 'Game is over, please click reset to play again',
+        variant: 'danger'
+      })
+    }
+  }
+  )
 
   const pushToIncorrect = letter => {
     if (!incorrectLetters.includes(letter)) {
@@ -271,12 +289,7 @@ const Play = ({
         </div>
         <AnimatedClickableLetters
           availableLetters={availableLetters}
-          pushToCorrect={pushToCorrect}
-          pushToIncorrect={pushToIncorrect}
-          removeAvailable={removeAvailable}
-          secret={secret}
-          gameOver={gameOver}
-          msgAlert={msgAlert}
+          onClick={pushValue}
         />
 
         <RevealedLetters

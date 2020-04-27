@@ -5,7 +5,7 @@ import { Transition } from 'react-spring/renderprops'
 import ClickableLetter from '../Play/ClickableLetter'
 
 const AnimatedClickableLetters = ({
-  availableLetters, pushToCorrect, pushToIncorrect, secret, removeAvailable, gameOver, msgAlert
+  availableLetters, onClick
 }) => {
   const letters = (
     <Transition
@@ -36,13 +36,8 @@ const AnimatedClickableLetters = ({
       {letter => props => (
         <ClickableLetter
           style={{ ...props, transition: 'ease' }}
-          pushToCorrect={pushToCorrect}
-          pushToIncorrect={pushToIncorrect}
-          secret={secret}
-          removeAvailable={removeAvailable}
           letter={letter}
-          gameOver={gameOver}
-          msgAlert={msgAlert}
+          onClick={onClick}
         />
       )}
     </Transition>
@@ -51,7 +46,7 @@ const AnimatedClickableLetters = ({
   return (
     <div className="inner-shadow" id="scroll-top">
       <h3>
-Available letters:
+        Available letters:
         { letters }
       </h3>
     </div>
