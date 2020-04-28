@@ -57,7 +57,7 @@ const App = () => {
         />
       ))}
       {/* routes */}
-      <main className="container">
+      <main className="container extra-width">
         {transitions.map(({ item, props, key }) => (
           <animated.div native="true" key={key} style={props}>
             <Switch location={item}>
