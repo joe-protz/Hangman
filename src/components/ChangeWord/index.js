@@ -22,6 +22,11 @@ const ChangeWord = ({
   }
 
   const handleSubmit = event => {
+    if (!word) {
+      console.log('cancelled')
+      cancelForm()
+      return
+    }
     event.preventDefault()
     setSecret(word.trim())
     resetGameAndAlert()
@@ -29,7 +34,7 @@ const ChangeWord = ({
   }
 
   const cancelForm = event => {
-    event.preventDefault()
+    if (event) event.preventDefault()
     toggleChangeWord()
     setWord('')
   }
