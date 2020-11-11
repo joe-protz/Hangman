@@ -17,16 +17,19 @@ const ChangeWord = ({ msgAlert, toggleGuessWord, guessWord }) => {
     setWord(event.target.value.replace(/[^a-z ]/gi, ''))
   }
 
-  const handleSubmit = event => {
-    event.preventDefault()
-    toggleGuessWord()
-    guessWord(word.trim())
-  }
-
   const cancelForm = event => {
-    event.preventDefault()
+    if (event) event.preventDefault()
     toggleGuessWord()
     setWord('')
+  }
+  const handleSubmit = event => {
+    if (!word) {
+      cancelForm()
+      return
+    }
+    if (event) event.preventDefault()
+    toggleGuessWord()
+    guessWord(word.trim())
   }
 
   return (
