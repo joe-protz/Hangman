@@ -45,7 +45,7 @@ const App = () => {
 
   return (
     <Fragment>
-      <Header defaultGuesses={defaultGuesses} />
+      <Header />
       {msgAlerts.map((msgAlert, index) => (
         <AutoDismissAlert
           key={`msgAlert.message_${index}`}

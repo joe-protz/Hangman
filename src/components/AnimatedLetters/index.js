@@ -50,6 +50,7 @@ const AnimatedClickableLetters = ({
           style={{ ...props, transition: 'ease' }}
           letter={letter}
           onClick={onClick}
+          availableLetters={availableLetters}
         />
       )}
     </Transition>
