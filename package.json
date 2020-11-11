@@ -11,6 +11,7 @@
     "dotenv": "4.0.0",
     "dotenv-expand": "4.2.0",
     "fireworks": "^2.2.5",
+    "framer-motion": "^2.9.4",
     "fs-extra": "3.0.1",
     "gh-pages": "^2.2.0",
     "object-assign": "4.1.1",

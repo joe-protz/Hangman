@@ -3,7 +3,7 @@ import PrimaryButton from '../Shared/Styled'
 // these are the green letters used to let a user guess a letter
 
 const ClickableLetter = ({
-  letter, onClick, style, availableLetters
+  letter, onClick, style, availableLetters, layoutID
 }) => {
   const [disabled, setDisabled] = useState(false)
   const letterRef = useRef(null)
@@ -24,7 +24,7 @@ const ClickableLetter = ({
   }, [availableLetters])
 
   return (
-    <PrimaryButton ref={letterRef} disabled={disabled} style={style} onClick={() => {
+    <PrimaryButton initial={{ y: -350 }} animate={{ y: 0 }} ref={letterRef} disabled={disabled} style={style} onClick={() => {
       onClick(letter)
       setDisabled(true)
     }}>{letter}</PrimaryButton>
