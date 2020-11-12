@@ -1,8 +1,9 @@
 import React, {
-  useState, useRef, useEffect, Fragment
+  useState, useRef, useEffect
 } from 'react'
 import { withRouter } from 'react-router-dom'
 import WordForm from '../WordForm'
+import { motion } from 'framer-motion'
 // the component used to change the secret from within Play
 const ChangeWord = ({
   resetGameAndAlert,
@@ -40,7 +41,7 @@ const ChangeWord = ({
   }
 
   return (
-    <Fragment>
+    <motion.div layout>
       <p>
         You may change your word below while keeping the same amount of guesses.
       </p>
@@ -53,7 +54,7 @@ const ChangeWord = ({
         cancelForm={cancelForm}
         reference={inputRef}
       />
-    </Fragment>
+    </motion.div>
   )
 }
 

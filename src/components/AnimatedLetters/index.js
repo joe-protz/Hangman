@@ -20,7 +20,7 @@ const AnimatedClickableLetters = ({
   )
 
   return (
-    <div animate className="row inner-shadow" id="scroll-top">
+    <div className="row inner-shadow" id="scroll-top">
       <div className="col-lg-6">
         <h3 className="text-center">
         Available letters

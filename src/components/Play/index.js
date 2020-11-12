@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { withRouter, Redirect } from 'react-router-dom'
-
-import { Spring, animated } from 'react-spring/renderprops'
 import AnimatedLetters from '../AnimatedLetters'
 import RevealedLetters from '../RevealedLetters'
 import CustomCheckbox from '../CustomCheckbox'
@@ -9,6 +7,8 @@ import CustomCheckbox from '../CustomCheckbox'
 import PrimaryButton from '../Shared/Styled'
 import ChangeWord from '../ChangeWord'
 import GuessWord from '../GuessWord'
+
+import { Modal } from 'react-bootstrap'
 
 import './Play.scss'
 
@@ -225,67 +225,65 @@ const Play = ({
 
   return (
     <AbsoluteWrapper>
+
       <div className="main-shadow">
-        <p>
+        <div>
+          <p>
           Please click a letter to guess a letter or enter a word to guess the
           whole word.
-        </p>
-        <CustomCheckbox
-          onChange={() => setAllowAnimations(!allowAnimations)}
-          checked={allowAnimations}
-        />
-        {/* reset game button */}
-        <div className="inner-shadow">
-          <PrimaryButton onClick={resetGameAndAlert}>
+          </p>
+          <CustomCheckbox
+            onChange={() => setAllowAnimations(!allowAnimations)}
+            checked={allowAnimations}
+          />
+          {/* reset game button */}
+
+          <div className="inner-shadow">
+            <PrimaryButton onClick={resetGameAndAlert}>
             Reset Guesses
-          </PrimaryButton>
+            </PrimaryButton>
 
-          {/* THIS IS THE BUTTON TO SHOW THE CHANGE WORD FORM */}
-          <AnimatedShowSecretWordFormBtn
-            showSecretWordFormButton={showSecretWordFormButton}
-            toggleChangeWord={toggleChangeWord}
-          />
-          {/* THIS IS THE BUTTON TO SHOW GUESS WORD FORM */}
-          <AnimatedShowGeuessWordBtn
-            showGuessWordBtn={showGuessWordBtn}
-            toggleGuessWord={toggleGuessWord}
-          />
-          {/* CHANGE WORD FORM */}
-          {showSecretWordForm && (
-            <Spring
-              from={{ opacity: 0, maxHeight: 0 }}
-              to={{ opacity: 1, maxHeight: 'auto' }}
-            >
-              {props => (
-                <animated.div style={props}>
-                  <ChangeWord
-                    toggleChangeWord={toggleChangeWord}
-                    resetGameAndAlert={resetGameAndAlert}
-                    setSecret={setSecret}
-                    msgAlert={msgAlert}
-                  />
-                </animated.div>
-              )}
-            </Spring>
-          )}
+            {/* THIS IS THE BUTTON TO SHOW THE CHANGE WORD FORM */}
+            <AnimatedShowSecretWordFormBtn
+              showSecretWordFormButton={showSecretWordFormButton}
+              toggleChangeWord={toggleChangeWord}
+            />
+            {/* THIS IS THE BUTTON TO SHOW GUESS WORD FORM */}
+            <AnimatedShowGeuessWordBtn
+              showGuessWordBtn={showGuessWordBtn}
+              toggleGuessWord={toggleGuessWord}
+            />
+            {/* CHANGE WORD FORM */}
+            <Modal show={showSecretWordForm} onHide={toggleChangeWord}>
+              <div style={{ padding: '35px' }} >
+                <Modal.Header closeButton style={{ marginBottom: '15px' }}>
+                  <Modal.Title>Change Secret Word</Modal.Title>
+                </Modal.Header>
+                <ChangeWord
+                  toggleChangeWord={toggleChangeWord}
+                  resetGameAndAlert={resetGameAndAlert}
+                  setSecret={setSecret}
+                  msgAlert={msgAlert}
+                />
+              </div>
+            </Modal>
+            {/* GUESS WORD FORM */}
+            <Modal show={showGuessForm} onHide={toggleGuessWord}>
+              <div style={{ padding: '35px' }}>
+                <Modal.Header closeButton style={{ marginBottom: '15px' }}>
+                  <Modal.Title>Guess Secret Word</Modal.Title>
+                </Modal.Header>
 
-          {/* GUESS WORD FORM */}
-          {showGuessForm && (
-            <Spring
-              from={{ opacity: 0, maxHeight: 0 }}
-              to={{ opacity: 1, maxHeight: 'auto' }}
-            >
-              {props => (
-                <div style={props}>
-                  <GuessWord
-                    guessWord={guessWord}
-                    toggleGuessWord={toggleGuessWord}
-                    msgAlert={msgAlert}
-                  />
-                </div>
-              )}
-            </Spring>
-          )}
+                <GuessWord
+                  guessWord={guessWord}
+                  toggleGuessWord={toggleGuessWord}
+                  msgAlert={msgAlert}
+                />
+
+              </div>
+            </Modal>
+
+          </div>
         </div>
         <AnimatedLetters
           availableLetters={availableLetters}
@@ -306,6 +304,7 @@ const Play = ({
         /> */}
         {activeFireworks && <FireworksComponent />}
       </div>
+
     </AbsoluteWrapper>
   )
 }
