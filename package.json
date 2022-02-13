@@ -80,7 +80,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "^10.0.3",
-    "ajv": "^5.5.2",
+    "ajv": "^6.12.3",
     "babel-core": "6.26.0",
     "babel-eslint": "^9.0.0",
     "babel-jest": "20.0.3",
